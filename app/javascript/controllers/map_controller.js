@@ -63,7 +63,10 @@ export default class extends Controller {
       data: this.geojson(),
       cluster: true,
       clusterMaxZoom: 14,
-      clusterRadius: 50
+      clusterRadius: 50,
+      clusterProperties: {
+        place_name: ["concat", ["get", "name"]]
+      }
     })
 
     map.addLayer({
@@ -99,7 +102,7 @@ export default class extends Controller {
       id: "cluster-count",
       type: "symbol",
       source: "places",
-      filter: ["has", "point_count"],
+      filter: ["all", ["has", "point_count"], [">", ["get", "point_count"], 1]],
       layout: {
         "text-field": "{point_count_abbreviated}",
         "text-size": 12
@@ -119,6 +122,29 @@ export default class extends Controller {
       }
     })
 
+    map.addLayer({
+      id: "single-place-label",
+      type: "symbol",
+      source: "places",
+      filter: [
+        "any",
+        ["!", ["has", "point_count"]],
+        ["all", ["has", "point_count"], ["==", ["get", "point_count"], 1]]
+      ],
+      layout: {
+        "text-field": ["coalesce", ["get", "name"], ["get", "place_name"]],
+        "text-size": 11,
+        "text-offset": [0, 1.2],
+        "text-anchor": "top",
+        "text-max-width": 10
+      },
+      paint: {
+        "text-color": "#1a1a1a",
+        "text-halo-color": "#ffffff",
+        "text-halo-width": 1.5
+      }
+    })
+
     map.on("click", "clusters", async (event) => {
       const features = map.queryRenderedFeatures(event.point, { layers: ["clusters"] })
       if (features.length === 0) return
@@ -132,9 +158,11 @@ export default class extends Controller {
       })
     })
 
-    map.on("click", "unclustered-point", (event) => {
-      const coordinates = event.features[0].geometry.coordinates.slice()
-      const { name, address, url } = event.features[0].properties
+    const showPlacePopup = (event) => {
+      const feature = event.features[0]
+      const coordinates = feature.geometry.coordinates.slice()
+      const { address, url } = feature.properties
+      const name = feature.properties.name || feature.properties.place_name
 
       while (Math.abs(event.lngLat.lng - coordinates[0]) > 180) {
         coordinates[0] += event.lngLat.lng > coordinates[0] ? 360 : -360
@@ -148,10 +176,14 @@ export default class extends Controller {
           `<a href="${this.escapeHtml(url)}">詳細</a>`
         )
         .addTo(map)
-    })
+    }
+
+    map.on("click", "unclustered-point", showPlacePopup)
+    map.on("click", "single-place-label", showPlacePopup)
 
     this.setCursorPointer("clusters")
     this.setCursorPointer("unclustered-point")
+    this.setCursorPointer("single-place-label")
   }
 
   setCursorPointer(layerId) {
