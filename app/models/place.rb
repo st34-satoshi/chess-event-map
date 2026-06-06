@@ -1,6 +1,8 @@
 class Place < ApplicationRecord
   include PublicUid
 
+  has_many :events, dependent: :restrict_with_error
+
   validates :address, presence: true
   validates :name, :latitude, :longitude, presence: true
 

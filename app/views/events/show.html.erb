@@ -4,6 +4,9 @@
   <dt>タイトル</dt>
   <dd><%= @event.title %></dd>
 
+  <dt>会場</dt>
+  <dd><%= link_to @event.place.name, @event.place %></dd>
+
   <dt>開催日</dt>
   <dd><%= @event.held_on.strftime("%Y年%m月%d日") %></dd>
 

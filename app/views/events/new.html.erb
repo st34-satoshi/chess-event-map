@@ -15,6 +15,46 @@
       <%= form.text_field :title, required: true, placeholder: "例: 東京チェスクラブ例会", class: "form__input" %>
     </div>
 
+    <% selected_place = @places.find { |place| place.id == @event.place_id } %>
+    <div
+      class="form__field place-search"
+      data-controller="place-search"
+      data-place-search-selected-id-value="<%= @event.place_id %>"
+      data-place-search-selected-name-value="<%= selected_place&.name %>"
+    >
+      <%= form.label :place_id, "会場", class: "form__label" %>
+      <p class="form__hint">会場名や住所で検索して選択してください。</p>
+      <%= form.hidden_field :place_id, data: { place_search_target: "placeId" } %>
+      <input
+        type="text"
+        class="form__input"
+        placeholder="例: 東京都庁"
+        autocomplete="off"
+        data-place-search-target="query"
+        data-action="input->place-search#filter focus->place-search#showResults blur->place-search#hideResults"
+      >
+      <ul class="place-search__results" data-place-search-target="results" hidden>
+        <% @places.each do |place| %>
+          <li data-place-search-target="option" data-search-text="<%= "#{place.name} #{place.address}".downcase %>">
+            <button
+              type="button"
+              class="place-search__option"
+              data-action="mousedown->place-search#select"
+              data-place-id="<%= place.id %>"
+              data-place-name="<%= place.name %>"
+            >
+              <span class="place-search__name"><%= place.name %></span>
+              <span class="place-search__address"><%= place.address %></span>
+            </button>
+          </li>
+        <% end %>
+        <li class="place-search__empty" data-place-search-target="empty" hidden>
+          該当する会場がありません。
+          <%= link_to "会場を登録する", new_place_path %>
+        </li>
+      </ul>
+    </div>
+
     <div class="form__field">
       <%= form.label :held_on, "開催日", class: "form__label" %>
       <p class="form__hint">複数日の場合は初日を入力してください。</p>
