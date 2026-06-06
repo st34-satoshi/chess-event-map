@@ -1,6 +1,6 @@
 class EventsController < ApplicationController
   def new
-    @event = Event.new
+    @event = Event.new(place_id: params[:place_id])
     @places = Place.order(:name)
   end
 

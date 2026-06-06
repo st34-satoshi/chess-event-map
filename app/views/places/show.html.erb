@@ -1,25 +1,44 @@
 <div class="form-page">
-  <h1 class="form-page__title">場所</h1>
+  <h1 class="form-page__title"><%= @place.name %></h1>
 
-  <div class="form__field">
-    <span class="form__label">会場名</span>
-    <div class="form__value"><%= @place.name %></div>
-  </div>
+  <details class="place-details">
+    <summary class="place-details__toggle">
+      <span class="place-details__show">詳細を表示</span>
+      <span class="place-details__hide">詳細を隠す</span>
+    </summary>
+    <div class="place-details__content">
+      <div class="form__field">
+        <span class="form__label">住所</span>
+        <div class="form__value"><%= @place.address %></div>
+      </div>
 
-  <div class="form__field">
-    <span class="form__label">住所</span>
-    <div class="form__value"><%= @place.address %></div>
-  </div>
+      <div class="form__field">
+        <span class="form__label">緯度</span>
+        <div class="form__value"><%= number_with_precision(@place.latitude, precision: 7, strip_insignificant_zeros: true) %></div>
+      </div>
 
-  <div class="form__field">
-    <span class="form__label">緯度</span>
-    <div class="form__value"><%= number_with_precision(@place.latitude, precision: 7, strip_insignificant_zeros: true) %></div>
-  </div>
+      <div class="form__field">
+        <span class="form__label">経度</span>
+        <div class="form__value"><%= number_with_precision(@place.longitude, precision: 7, strip_insignificant_zeros: true) %></div>
+      </div>
+    </div>
+  </details>
 
-  <div class="form__field">
-    <span class="form__label">経度</span>
-    <div class="form__value"><%= number_with_precision(@place.longitude, precision: 7, strip_insignificant_zeros: true) %></div>
-  </div>
+  <section class="form__field">
+    <h2 class="form__label">イベント一覧</h2>
+    <% if @events.any? %>
+      <ul class="event-list">
+        <% @events.each do |event| %>
+          <li class="event-list__item">
+            <%= link_to event.title, event, class: "event-list__title form__link" %>
+            <span class="event-list__date"><%= event.held_on.strftime("%Y年%m月%d日") %></span>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p class="form__hint">この会場のイベントはまだ登録されていません。</p>
+    <% end %>
+  </section>
 
-  <%= link_to "別の場所を登録する", new_place_path, class: "form__submit" %>
+  <%= link_to "イベントを登録する", new_event_path(place_id: @place.id), class: "form__submit" %>
 </div>
