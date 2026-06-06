@@ -27,4 +27,8 @@
       </div>
     </div>
   <% end %>
+
+  <%= link_to "修正を依頼する",
+    new_request_path(correctable_type: "Event", correctable_public_uid: @event.public_uid),
+    class: "form__submit" %>
 </div>

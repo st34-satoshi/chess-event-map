@@ -40,5 +40,10 @@
     <% end %>
   </section>
 
-  <%= link_to "イベントを登録する", new_event_path(place_id: @place.id), class: "form__submit" %>
+  <div class="form__actions">
+    <%= link_to "イベントを登録する", new_event_path(place_id: @place.id), class: "form__submit" %>
+    <%= link_to "修正を依頼する",
+      new_request_path(correctable_type: "Place", correctable_public_uid: @place.public_uid),
+      class: "form__submit form__submit--secondary" %>
+  </div>
 </div>

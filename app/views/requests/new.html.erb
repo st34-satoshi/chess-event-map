@@ -1,0 +1,32 @@
+<div class="form-page">
+  <h1 class="form-page__title">修正依頼</h1>
+
+  <p class="form__hint form__hint--intro">
+    <% if @correctable.is_a?(Event) %>
+      イベント「<%= @correctable.title %>」の内容に誤りがある場合、修正内容をお知らせください。
+    <% else %>
+      会場「<%= @correctable.name %>」の内容に誤りがある場合、修正内容をお知らせください。
+    <% end %>
+  </p>
+
+  <%= form_with model: @request, url: requests_path, class: "form" do |form| %>
+    <%= hidden_field_tag :correctable_type, @correctable.class.name %>
+    <%= hidden_field_tag :correctable_public_uid, @correctable.public_uid %>
+
+    <% if @request.errors.any? %>
+      <ul class="form__errors">
+        <% @request.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    <% end %>
+
+    <div class="form__field">
+      <%= form.label :comment, "修正内容", class: "form__label" %>
+      <p class="form__hint">修正後の正しい内容をご記入してください。</p>
+      <%= form.text_area :comment, required: true, rows: 6, placeholder: "例: 削除してください。\n例: 開催日は2026年7月1日です。", class: "form__input" %>
+    </div>
+
+    <%= form.submit "送信する", class: "form__submit" %>
+  <% end %>
+</div>

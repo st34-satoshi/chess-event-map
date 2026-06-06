@@ -2,6 +2,7 @@ class Event < ApplicationRecord
   include PublicUid
 
   belongs_to :place
+  has_many :requests, as: :correctable, dependent: :destroy
 
   validates :title, presence: true
   validates :held_on, presence: true

@@ -2,6 +2,7 @@ class Place < ApplicationRecord
   include PublicUid
 
   has_many :events, dependent: :restrict_with_error
+  has_many :requests, as: :correctable, dependent: :destroy
 
   validates :name, presence: true, uniqueness: { message: "はすでに登録されています" }
   validates :address, presence: true, uniqueness: { message: "はすでに登録されています" }
