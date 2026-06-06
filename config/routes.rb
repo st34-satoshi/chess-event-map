@@ -11,5 +11,5 @@ Rails.application.routes.draw do
 
   root "home#index"
 
-  resources :places, only: %i[new create show]
+  resources :places, only: %i[new create show], param: :public_uid
 end

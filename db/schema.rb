@@ -10,13 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_06_092151) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_06_093000) do
   create_table "events", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.date "held_on"
+    t.string "public_uid", null: false
     t.string "title"
     t.datetime "updated_at", null: false
     t.string "url"
+    t.index ["public_uid"], name: "index_events_on_public_uid", unique: true
   end
 
   create_table "places", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -25,6 +27,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_06_092151) do
     t.decimal "latitude", precision: 10, scale: 7
     t.decimal "longitude", precision: 10, scale: 7
     t.string "name"
+    t.string "public_uid", null: false
     t.datetime "updated_at", null: false
+    t.index ["public_uid"], name: "index_places_on_public_uid", unique: true
   end
 end

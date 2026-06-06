@@ -22,7 +22,7 @@ class PlacesController < ApplicationController
   end
 
   def show
-    @place = Place.find(params[:id])
+    @place = Place.find_by!(public_uid: params[:public_uid])
   end
 
   private

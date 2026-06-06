@@ -1,4 +1,6 @@
 class Place < ApplicationRecord
+  include PublicUid
+
   validates :address, presence: true
   validates :name, :latitude, :longitude, presence: true
 
