@@ -24,6 +24,18 @@
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+
+    <% if Rails.env.production? && Rails.application.credentials.google_analytics_id.present? %>
+      <!-- Global site tag (gtag.js) - Google Analytics -->
+      <script async src="<%= "https://www.googletagmanager.com/gtag/js?id=#{Rails.application.credentials.google_analytics_id}" %>"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '<%= Rails.application.credentials.google_analytics_id %>');
+      </script>
+    <% end %>
   </head>
 
   <body>
