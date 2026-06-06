@@ -1,0 +1,23 @@
+<h1>場所を登録</h1>
+
+<%= form_with model: @place do |form| %>
+  <% if @place.errors.any? %>
+    <ul>
+      <% @place.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <div>
+    <%= form.label :name, "会場名" %>
+    <%= form.text_field :name, required: true, placeholder: "例: 東京都庁" %>
+  </div>
+
+  <div>
+    <%= form.label :address, "住所" %>
+    <%= form.text_field :address, required: true, placeholder: "例: 〒163-8001 東京都新宿区西新宿２丁目８−１" %>
+  </div>
+
+  <%= form.submit "登録する" %>
+<% end %>
