@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_06_095140) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_06_112313) do
   create_table "events", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.date "held_on"
@@ -32,6 +32,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_06_095140) do
     t.string "public_uid", null: false
     t.datetime "updated_at", null: false
     t.index ["public_uid"], name: "index_places_on_public_uid", unique: true
+  end
+
+  create_table "requests", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.text "comment"
+    t.bigint "correctable_id", null: false
+    t.string "correctable_type", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["correctable_type", "correctable_id"], name: "index_requests_on_correctable"
   end
 
   add_foreign_key "events", "places"
