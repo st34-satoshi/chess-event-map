@@ -3,8 +3,10 @@ class Place < ApplicationRecord
 
   has_many :events, dependent: :restrict_with_error
 
-  validates :address, presence: true
-  validates :name, :latitude, :longitude, presence: true
+  validates :name, presence: true, uniqueness: { message: "はすでに登録されています" }
+  validates :address, presence: true, uniqueness: { message: "はすでに登録されています" }
+  validates :latitude, :longitude, presence: true
+  validate :coordinates_must_be_unique
 
   def assign_coordinates_from_address
     geocoded = PlaceGeocoder.lookup(address)
@@ -13,5 +15,18 @@ class Place < ApplicationRecord
       latitude: geocoded[:latitude],
       longitude: geocoded[:longitude]
     )
+  end
+
+  private
+
+  def coordinates_must_be_unique
+    return if latitude.blank? || longitude.blank?
+
+    scope = self.class.where(latitude: latitude, longitude: longitude)
+    scope = scope.where.not(id: id) if persisted?
+
+    return unless scope.exists?
+
+    errors.add(:base, "同じ緯度経度の会場はすでに登録されています")
   end
 end
