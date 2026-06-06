@@ -15,7 +15,7 @@ class PlacesController < ApplicationController
     end
 
     if @place.save
-      redirect_to @place, notice: "場所を登録しました。"
+      redirect_to @place, notice: "会場を登録しました。"
     else
       render :new, status: :unprocessable_entity
     end
