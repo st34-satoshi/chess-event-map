@@ -16,9 +16,22 @@ test:
   database: chess_event_map_test
 
 production:
-  <<: *default
-  username: <%= Rails.application.credentials.dig(:database, :username) %>
-  password: <%= Rails.application.credentials.dig(:database, :password) %>
-  host: <%= Rails.application.credentials.dig(:database, :host) %>
-  port: <%= Rails.application.credentials.dig(:database, :port) %>
-  database: chess_event_map
+  primary: &primary_production
+    <<: *default
+    username: <%= Rails.application.credentials.dig(:database, :username) %>
+    password: <%= Rails.application.credentials.dig(:database, :password) %>
+    host: <%= Rails.application.credentials.dig(:database, :host) %>
+    port: <%= Rails.application.credentials.dig(:database, :port) %>
+    database: chess_event_map
+  cable:
+    <<: *primary_production
+    database: chess_event_map
+    migrations_paths: db/cable_migrate
+  cache:
+    <<: *primary_production
+    database: chess_event_map
+    migrations_paths: db/cache_migrate
+  queue:
+    <<: *primary_production
+    database: chess_event_map
+    migrations_paths: db/queue_migrate
