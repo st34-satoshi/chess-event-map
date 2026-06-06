@@ -1,0 +1,16 @@
+<h1>イベント</h1>
+
+<dl>
+  <dt>タイトル</dt>
+  <dd><%= @event.title %></dd>
+
+  <dt>開催日</dt>
+  <dd><%= @event.held_on.strftime("%Y年%m月%d日") %></dd>
+
+  <% if @event.url.present? %>
+    <dt>URL</dt>
+    <dd><%= link_to @event.url, @event.url, target: "_blank", rel: "noopener noreferrer" %></dd>
+  <% end %>
+</dl>
+
+<p><%= link_to "別のイベントを登録する", new_event_path %></p>

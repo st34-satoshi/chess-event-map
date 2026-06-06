@@ -1,0 +1,32 @@
+<div class="form-page">
+  <h1 class="form-page__title">イベントを登録</h1>
+
+  <%= form_with model: @event, class: "form" do |form| %>
+    <% if @event.errors.any? %>
+      <ul class="form__errors">
+        <% @event.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    <% end %>
+
+    <div class="form__field">
+      <%= form.label :title, "イベント名", class: "form__label" %>
+      <%= form.text_field :title, required: true, placeholder: "例: 東京チェスクラブ例会", class: "form__input" %>
+    </div>
+
+    <div class="form__field">
+      <%= form.label :held_on, "開催日", class: "form__label" %>
+      <p class="form__hint">複数日の場合は初日を入力してください。</p>
+      <%= form.date_field :held_on, required: true, class: "form__input" %>
+    </div>
+
+    <div class="form__field">
+      <%= form.label :url, "詳細がわかるWebサイトやSNSなどのURL", class: "form__label" %>
+      <p class="form__hint">任意</p>
+      <%= form.url_field :url, placeholder: "例: https://example.com/events/1", class: "form__input" %>
+    </div>
+
+    <%= form.submit "登録する", class: "form__submit" %>
+  <% end %>
+</div>
