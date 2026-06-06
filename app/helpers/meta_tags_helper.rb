@@ -1,6 +1,9 @@
 module MetaTagsHelper
   SITE_NAME = "チェスイベントマップ"
   DEFAULT_DESCRIPTION = "チェスイベントを地図で探せるサービス"
+  OGP_IMAGE_PATH = "/ogp.png"
+  OGP_IMAGE_WIDTH = 800
+  OGP_IMAGE_HEIGHT = 534
 
   def meta_title_tag(title)
     tag.title(title)
@@ -10,7 +13,7 @@ module MetaTagsHelper
     tag.meta(name: "description", content: description)
   end
 
-  def meta_ogp_tags(title:, description:, url: nil, image: nil, type: "website", site_name: SITE_NAME)
+  def meta_ogp_tags(title:, description:, url: nil, image: nil, image_width: OGP_IMAGE_WIDTH, image_height: OGP_IMAGE_HEIGHT, type: "website", site_name: SITE_NAME)
     url ||= request.original_url
     image ||= default_og_image_url
 
@@ -20,6 +23,8 @@ module MetaTagsHelper
       tag.meta(property: "og:type", content: type),
       tag.meta(property: "og:url", content: url),
       tag.meta(property: "og:image", content: image),
+      tag.meta(property: "og:image:width", content: image_width),
+      tag.meta(property: "og:image:height", content: image_height),
       tag.meta(property: "og:site_name", content: site_name),
       tag.meta(name: "twitter:card", content: "summary_large_image"),
       tag.meta(name: "twitter:title", content: title),
@@ -51,6 +56,6 @@ module MetaTagsHelper
   private
 
   def default_og_image_url
-    "#{request.base_url}/icon.png"
+    "#{request.base_url}#{OGP_IMAGE_PATH}"
   end
 end
