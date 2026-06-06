@@ -63,10 +63,7 @@ export default class extends Controller {
       data: this.geojson(),
       cluster: true,
       clusterMaxZoom: 14,
-      clusterRadius: 50,
-      clusterProperties: {
-        place_name: ["concat", ["get", "name"]]
-      }
+      clusterRadius: 50
     })
 
     map.addLayer({
@@ -126,13 +123,9 @@ export default class extends Controller {
       id: "single-place-label",
       type: "symbol",
       source: "places",
-      filter: [
-        "any",
-        ["!", ["has", "point_count"]],
-        ["all", ["has", "point_count"], ["==", ["get", "point_count"], 1]]
-      ],
+      filter: ["!", ["has", "point_count"]],
       layout: {
-        "text-field": ["coalesce", ["get", "name"], ["get", "place_name"]],
+        "text-field": ["get", "name"],
         "text-size": 11,
         "text-offset": [0, 1.2],
         "text-anchor": "top",
@@ -162,7 +155,7 @@ export default class extends Controller {
       const feature = event.features[0]
       const coordinates = feature.geometry.coordinates.slice()
       const { address, url } = feature.properties
-      const name = feature.properties.name || feature.properties.place_name
+      const name = feature.properties.name
 
       while (Math.abs(event.lngLat.lng - coordinates[0]) > 180) {
         coordinates[0] += event.lngLat.lng > coordinates[0] ? 360 : -360

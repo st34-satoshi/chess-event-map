@@ -10,9 +10,31 @@
  */
 
 @import "header.css";
-@import "flash.css";
 @import "form.css";
 @import "map.css";
+
+.flash {
+  margin-bottom: 1.25rem;
+}
+
+.alert {
+  padding: 0.85rem 1rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.alert--notice {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+}
+
+.alert--alert {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+}
 
 main {
   max-width: 1200px;
