@@ -36,6 +36,7 @@
         gtag('config', '<%= Rails.application.credentials.google_analytics_id %>');
       </script>
     <% end %>
+    <%= Sentry.get_trace_propagation_meta.html_safe %>
   </head>
 
   <body>
