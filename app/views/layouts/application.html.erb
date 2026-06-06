@@ -42,6 +42,7 @@
   <body>
     <%= render "shared/header" %>
     <main class="<%= content_for?(:main_class) ? yield(:main_class) : "" %>">
+      <%= render "shared/flash" %>
       <%= yield %>
     </main>
   </body>
