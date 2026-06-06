@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   root "home#index"
+  get "map", to: "maps#index", as: :map
 
   resources :places, only: %i[new create show], param: :public_uid
   resources :events, only: %i[new create show], param: :public_uid

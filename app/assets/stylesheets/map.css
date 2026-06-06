@@ -1,0 +1,17 @@
+main.main--full {
+  max-width: none;
+  padding: 0;
+}
+
+.map {
+  width: 100%;
+  height: calc(100vh - 57px);
+}
+
+.map--sample {
+  height: 400px;
+  margin-top: 1.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+}
