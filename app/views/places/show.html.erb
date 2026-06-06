@@ -1,17 +1,25 @@
-<h1>場所</h1>
+<div class="form-page">
+  <h1 class="form-page__title">場所</h1>
 
-<dl>
-  <dt>会場名</dt>
-  <dd><%= @place.name %></dd>
+  <div class="form__field">
+    <span class="form__label">会場名</span>
+    <div class="form__value"><%= @place.name %></div>
+  </div>
 
-  <dt>住所</dt>
-  <dd><%= @place.address %></dd>
+  <div class="form__field">
+    <span class="form__label">住所</span>
+    <div class="form__value"><%= @place.address %></div>
+  </div>
 
-  <dt>緯度</dt>
-  <dd><%= number_with_precision(@place.latitude, precision: 7, strip_insignificant_zeros: true) %></dd>
+  <div class="form__field">
+    <span class="form__label">緯度</span>
+    <div class="form__value"><%= number_with_precision(@place.latitude, precision: 7, strip_insignificant_zeros: true) %></div>
+  </div>
 
-  <dt>経度</dt>
-  <dd><%= number_with_precision(@place.longitude, precision: 7, strip_insignificant_zeros: true) %></dd>
-</dl>
+  <div class="form__field">
+    <span class="form__label">経度</span>
+    <div class="form__value"><%= number_with_precision(@place.longitude, precision: 7, strip_insignificant_zeros: true) %></div>
+  </div>
 
-<p><%= link_to "別の場所を登録する", new_place_path %></p>
+  <%= link_to "別の場所を登録する", new_place_path, class: "form__submit" %>
+</div>

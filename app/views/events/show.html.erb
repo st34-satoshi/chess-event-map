@@ -1,19 +1,32 @@
-<h1>イベント</h1>
+<div class="form-page">
+  <h1 class="form-page__title">イベント</h1>
 
-<dl>
-  <dt>タイトル</dt>
-  <dd><%= @event.title %></dd>
+  <div class="form__field">
+    <span class="form__label">イベント名</span>
+    <div class="form__value"><%= @event.title %></div>
+  </div>
 
-  <dt>会場</dt>
-  <dd><%= link_to @event.place.name, @event.place %></dd>
+  <div class="form__field">
+    <span class="form__label">会場</span>
+    <div class="form__value">
+      <%= link_to @event.place.name, @event.place, class: "form__link" %>
+      <p class="form__hint"><%= @event.place.address %></p>
+    </div>
+  </div>
 
-  <dt>開催日</dt>
-  <dd><%= @event.held_on.strftime("%Y年%m月%d日") %></dd>
+  <div class="form__field">
+    <span class="form__label">開催日</span>
+    <div class="form__value"><%= @event.held_on.strftime("%Y年%m月%d日") %></div>
+  </div>
 
   <% if @event.url.present? %>
-    <dt>URL</dt>
-    <dd><%= link_to @event.url, @event.url, target: "_blank", rel: "noopener noreferrer" %></dd>
+    <div class="form__field">
+      <span class="form__label">詳細がわかるWebサイトやSNSなどのURL</span>
+      <div class="form__value">
+        <%= link_to @event.url, @event.url, class: "form__link", target: "_blank", rel: "noopener noreferrer" %>
+      </div>
+    </div>
   <% end %>
-</dl>
 
-<p><%= link_to "別のイベントを登録する", new_event_path %></p>
+  <%= link_to "別のイベントを登録する", new_event_path, class: "form__submit" %>
+</div>

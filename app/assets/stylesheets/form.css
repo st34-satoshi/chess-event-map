@@ -79,6 +79,26 @@
   background: #333;
 }
 
+.form__value {
+  font-size: 1rem;
+  color: #333;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.form__value .form__hint {
+  margin: 0.25rem 0 0;
+}
+
+.form__link {
+  color: #333;
+  text-decoration: underline;
+}
+
+.form__link:hover {
+  color: #000;
+}
+
 .place-search {
   position: relative;
 }
