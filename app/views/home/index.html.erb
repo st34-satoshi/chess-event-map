@@ -1,1 +1,21 @@
+<% content_for :title do %>
+  <%= meta_title_tag("チェスイベントマップ") %>
+<% end %>
+
+<% content_for :description do %>
+  <%= meta_description_tag("チェスイベントを地図で探せるサービス") %>
+<% end %>
+
+<% content_for :ogp do %>
+  <%= meta_ogp_tags(
+    title: "チェスイベントマップ",
+    description: "チェスイベントを地図で探せるサービス",
+    url: root_url
+  ) %>
+<% end %>
+
+<% content_for :canonical do %>
+  <%= meta_canonical_tag(root_url) %>
+<% end %>
+
 <h1>チェスイベントマップ</h1>

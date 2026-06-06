@@ -1,7 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html prefix="og: https://ogp.me/ns#">
   <head>
-    <title><%= content_for(:title) || "Chess Event Map" %></title>
+    <%= content_for?(:title) ? yield(:title) : default_meta_title_tag %>
+    <%= content_for?(:description) ? yield(:description) : default_meta_description_tag %>
+    <%= content_for?(:ogp) ? yield(:ogp) : default_meta_ogp_tags %>
+    <%= yield(:canonical) if content_for?(:canonical) %>
+
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="application-name" content="Chess Event Map">
