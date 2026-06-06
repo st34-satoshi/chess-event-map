@@ -10,11 +10,6 @@
       </ul>
     <% end %>
 
-    <div class="form__field">
-      <%= form.label :title, "イベント名", class: "form__label" %>
-      <%= form.text_field :title, required: true, placeholder: "例: 東京チェスクラブ例会", class: "form__input" %>
-    </div>
-
     <% selected_place = @places.find { |place| place.id == @event.place_id } %>
     <div
       class="form__field place-search"
@@ -22,7 +17,10 @@
       data-place-search-selected-id-value="<%= @event.place_id %>"
       data-place-search-selected-name-value="<%= selected_place&.name %>"
     >
-      <%= form.label :place_id, "会場", class: "form__label" %>
+      <div class="form__label-row">
+        <%= form.label :place_id, "会場", class: "form__label" %>
+        <%= link_to "新しい会場を登録する", new_place_path, class: "form__label-action" %>
+      </div>
       <p class="form__hint">会場名や住所で検索して選択してください。</p>
       <%= form.hidden_field :place_id, data: { place_search_target: "placeId" } %>
       <input
@@ -53,6 +51,11 @@
           <%= link_to "会場を登録する", new_place_path %>
         </li>
       </ul>
+    </div>
+
+    <div class="form__field">
+      <%= form.label :title, "イベント名", class: "form__label" %>
+      <%= form.text_field :title, required: true, placeholder: "例: 東京チェスクラブ例会", class: "form__input" %>
     </div>
 
     <div class="form__field">
