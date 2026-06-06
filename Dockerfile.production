@@ -6,7 +6,7 @@ RUN apt-get update -y -qq && apt-get install -yq vim
 WORKDIR /chess_event_map
 COPY Gemfile /chess_event_map/Gemfile
 COPY Gemfile.lock /chess_event_map/Gemfile.lock
-RUN bundle install --without test development
+RUN bundle config set --local without 'development test' && bundle install
 
 # Add a script to be executed every time the container starts.
 COPY entrypoint.sh /usr/bin/
