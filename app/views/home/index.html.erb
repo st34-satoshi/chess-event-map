@@ -19,7 +19,7 @@
 <% end %>
 
 <% content_for :head do %>
-  <%= stylesheet_link_tag "maplibre-gl", "data-turbo-track": "reload" %>
+  <%= tag.link rel: "stylesheet", href: "/maplibre-gl.css", "data-turbo-track": "reload" %>
 <% end %>
 
 <h1>チェスイベントマップ</h1>
