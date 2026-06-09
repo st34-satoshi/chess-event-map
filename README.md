@@ -1,7 +1,11 @@
 # chess-event-map
 チェスイベントマップ
+https://chess-event-map.stu345.com/
 
 ## Development
+1. `docker compose up`
+2. open `localhost:3066`
+
 ### credentials
 `docker compose run -e EDITOR=vim web rails credentials:edit`
 
