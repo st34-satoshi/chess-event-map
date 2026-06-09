@@ -3,7 +3,7 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static values = {
     markers: Array,
-    center: { type: Array, default: [139.767125, 35.681236] },
+    center: { type: Array, default: [138.0, 36.0] },
     zoom: { type: Number, default: 5 }
   }
 
@@ -13,8 +13,8 @@ export default class extends Controller {
     this.map = new this.maplibregl.Map({
       container: this.element,
       style: "https://tiles.openfreemap.org/styles/liberty",
-      center: this.initialCenter(),
-      zoom: this.initialZoom()
+      center: this.centerValue,
+      zoom: this.zoomValue
     })
 
     this.map.addControl(new this.maplibregl.NavigationControl())
@@ -23,18 +23,6 @@ export default class extends Controller {
 
   disconnect() {
     this.map?.remove()
-  }
-
-  initialCenter() {
-    if (this.markersValue.length === 0) return this.centerValue
-
-    const lng = this.markersValue.reduce((sum, marker) => sum + marker.lng, 0) / this.markersValue.length
-    const lat = this.markersValue.reduce((sum, marker) => sum + marker.lat, 0) / this.markersValue.length
-    return [lng, lat]
-  }
-
-  initialZoom() {
-    return this.markersValue.length > 0 ? 10 : this.zoomValue
   }
 
   geojson() {
