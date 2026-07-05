@@ -1,11 +1,15 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  title: MyString
+  title: MyString1
   held_on: 2026-06-06
-  url: MyString
+  url: https://example.com/one
+  place: one
+  public_uid: publicuid03
 
 two:
-  title: MyString
+  title: MyString2
   held_on: 2026-06-06
-  url: MyString
+  url: https://example.com/two
+  place: two
+  public_uid: publicuid04

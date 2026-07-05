@@ -1,11 +1,9 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  correctable: one
-  correctable_type: Correctable
-  comment: MyText
+  correctable: one (Place)
+  comment: MyText1
 
 two:
-  correctable: two
-  correctable_type: Correctable
-  comment: MyText
+  correctable: two (Event)
+  comment: MyText2
