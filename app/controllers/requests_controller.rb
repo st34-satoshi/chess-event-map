@@ -1,5 +1,5 @@
 class RequestsController < ApplicationController
-  CORRECTABLE_TYPES = %w[Place Event].freeze
+  CORRECTABLE_TYPES = { "Place" => Place, "Event" => Event }.freeze
 
   before_action :set_correctable, only: %i[new create]
 
@@ -20,10 +20,10 @@ class RequestsController < ApplicationController
   private
 
   def set_correctable
-    type = params[:correctable_type]
-    raise ActiveRecord::RecordNotFound unless type.in?(CORRECTABLE_TYPES)
+    klass = CORRECTABLE_TYPES[params[:correctable_type]]
+    raise ActiveRecord::RecordNotFound unless klass
 
-    @correctable = type.constantize.find_by!(public_uid: params[:correctable_public_uid])
+    @correctable = klass.find_by!(public_uid: params[:correctable_public_uid])
   end
 
   def request_params

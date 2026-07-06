@@ -18,7 +18,7 @@ class PlaceGeocoder
 
     result = Hash.from_xml(response.body).fetch("result")
     if result["error"]
-      raise GeocodingError, "geocoding error #{result['error']} for address: #{address}"
+      raise GeocodingError, "geocoding error #{result["error"]} for address: #{address}"
     end
 
     coordinate = result["coordinate"]

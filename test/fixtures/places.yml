@@ -1,13 +1,15 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  name: MyString
-  address: MyText
+  name: MyString1
+  address: MyText1
   latitude: 9.99
   longitude: 9.99
+  public_uid: publicuid01
 
 two:
-  name: MyString
-  address: MyText
-  latitude: 9.99
-  longitude: 9.99
+  name: MyString2
+  address: MyText2
+  latitude: 19.99
+  longitude: 19.99
+  public_uid: publicuid02
