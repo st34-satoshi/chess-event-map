@@ -15,7 +15,7 @@ class NotifySlackOfRequestJob < ApplicationJob
     target_name = correctable.respond_to?(:title) ? correctable.title : correctable.name
 
     <<~TEXT.chomp
-      修正依頼が届きました。
+      【チェスイベントマップ】修正依頼が届きました。
       対象: #{correctable.class.name}「#{target_name}」
       内容: #{request.comment}
     TEXT

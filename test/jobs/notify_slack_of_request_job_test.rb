@@ -6,7 +6,7 @@ class NotifySlackOfRequestJobTest < ActiveJob::TestCase
     request = place.requests.create!(comment: "住所が間違っています")
 
     message = nil
-    SlackNotifier.stub :notify, ->(text) { message = text } do
+    stub_class_method(SlackNotifier, :notify, ->(text) { message = text }) do
       NotifySlackOfRequestJob.perform_now(request.id)
     end
 
@@ -16,7 +16,7 @@ class NotifySlackOfRequestJobTest < ActiveJob::TestCase
   end
 
   test "does nothing when the request no longer exists" do
-    SlackNotifier.stub :notify, ->(*) { raise "should not be called" } do
+    stub_class_method(SlackNotifier, :notify, ->(*) { raise "should not be called" }) do
       assert_nothing_raised do
         NotifySlackOfRequestJob.perform_now(-1)
       end

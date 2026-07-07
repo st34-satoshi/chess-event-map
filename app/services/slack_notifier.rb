@@ -8,7 +8,17 @@ class SlackNotifier
   def self.notify(text)
     token = Rails.application.credentials.slack_api_token
     channel = Rails.application.credentials.slack_channel
-    return if token.blank? || channel.blank?
+    if token.blank? || channel.blank?
+      Sentry.capture_message(
+        "Slack credentials are missing",
+        level: :error,
+        extra: {
+          token_present: token.present?,
+          channel_present: channel.present?
+        }
+      )
+      return
+    end
 
     uri = URI(API_URL)
     request = Net::HTTP::Post.new(uri)
@@ -22,7 +32,5 @@ class SlackNotifier
 
     body = JSON.parse(response.body)
     Rails.logger.error("Slack notification failed: #{body}") unless body["ok"]
-  rescue StandardError => e
-    Rails.logger.error("Slack notification error: #{e.message}")
   end
 end
