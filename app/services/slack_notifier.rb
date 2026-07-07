@@ -4,18 +4,14 @@ require "json"
 
 class SlackNotifier
   API_URL = "https://slack.com/api/chat.postMessage"
+  CHANNEL = "#random"
 
   def self.notify(text)
-    token = Rails.application.credentials.slack_api_token
-    channel = Rails.application.credentials.slack_channel
-    if token.blank? || channel.blank?
+    token = Rails.application.credentials.dig(:slack, :api_token)
+    if token.blank?
       Sentry.capture_message(
-        "Slack credentials are missing",
-        level: :error,
-        extra: {
-          token_present: token.present?,
-          channel_present: channel.present?
-        }
+        "Slack API token is missing",
+        level: :error
       )
       return
     end
@@ -24,7 +20,7 @@ class SlackNotifier
     request = Net::HTTP::Post.new(uri)
     request["Authorization"] = "Bearer #{token}"
     request["Content-Type"] = "application/json; charset=utf-8"
-    request.body = { channel: channel, text: text }.to_json
+    request.body = { channel: CHANNEL, text: text }.to_json
 
     response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
       http.request(request)
