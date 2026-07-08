@@ -1,9 +1,16 @@
 /*
  *= require header
+ *= require footer
  *= require form
  *= require map
  *= require_self
  */
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
 
 .flash {
   margin-bottom: 1.25rem;
@@ -29,7 +36,9 @@
 }
 
 main {
+  flex: 1;
   max-width: 1200px;
   margin: 0 auto;
   padding: 1.5rem 1rem;
+  width: 100%;
 }
