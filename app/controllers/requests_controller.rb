@@ -11,6 +11,7 @@ class RequestsController < ApplicationController
     @request = @correctable.requests.build(request_params)
 
     if @request.save
+      NotifySlackOfRequestJob.perform_later(@request.id)
       redirect_to @correctable, notice: "修正依頼を送信しました。"
     else
       render :new, status: :unprocessable_entity

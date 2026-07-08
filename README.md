@@ -18,6 +18,7 @@ https://chess-event-map.stu345.com/
 - `docker compose -f docker-compose.production.yml build`
 - `docker compose -f docker-compose.production.yml up -d`
 - reset database: `docker compose -f docker-compose.production.yml run web rails db:migrate:reset RAILS_ENV=production DISABLE_DATABASE_ENVIRONMENT_CHECK=1`
+- jobを使えるようにする: `docker compose -f docker-compose.production.yml run web rails db:prepare_solid RAILS_ENV=production`
 
 ## Admin
 ### create user

@@ -8,6 +8,7 @@ services:
       - .:/chess_event_map
     environment:
       RAILS_ENV: production
+      SOLID_QUEUE_IN_PUMA: true
     healthcheck:
       test: "curl http://localhost:3000 || exit 1"
       interval: 60s
