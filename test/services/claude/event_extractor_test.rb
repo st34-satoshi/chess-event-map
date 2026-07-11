@@ -63,7 +63,6 @@ class Claude::EventExtractorTest < ActiveSupport::TestCase
   end
 
   test "raises when anthropic api key is missing" do
-    Claude::Client # loads Claude::Error
     stub_credentials(api_key: nil) do
       assert_raises(Claude::Error) do
         Claude::EventExtractor.extract("<html></html>", url: "https://example.com/")

@@ -1,8 +1,6 @@
 require "anthropic"
 
 module Claude
-  class Error < StandardError; end
-
   class Client
     MODEL = "claude-haiku-4-5-20251001"
     MAX_TOKENS = 8192
