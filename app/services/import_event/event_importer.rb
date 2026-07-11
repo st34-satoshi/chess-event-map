@@ -16,7 +16,8 @@ module ImportEvent
 
       html = Client.get(detail_url)
       cleaned = HtmlCleaner.clean(html)
-      detail = Claude::EventExtractor.extract(cleaned, url: detail_url)
+      existing_place_names = Place.order(:name).pluck(:name)
+      detail = Claude::EventExtractor.extract(cleaned, url: detail_url, existing_place_names: existing_place_names)
 
       if Event.exists?(held_on: detail[:held_on], url: detail[:detail_url])
         event = Event.find_by!(held_on: detail[:held_on], url: detail[:detail_url])
@@ -28,16 +29,21 @@ module ImportEvent
         raise ArgumentError, "venue name is missing"
       end
 
-      address = detail[:place_address].presence ||
-        Claude::AddressInferrer.infer(place_name: detail[:place_name])
-      unless address.present?
-        raise ArgumentError, "geocodable address could not be determined for #{detail[:place_name]}"
-      end
+      place_name = detail[:place_name]
+      existing_place = Place.find_by(name: place_name)
 
-      place, place_created = find_or_create_place!(
-        name: detail[:place_name],
-        address: address
-      )
+      if existing_place
+        place = existing_place
+        place_created = false
+      else
+        address = detail[:place_address].presence ||
+          Claude::AddressInferrer.infer(place_name: place_name)
+        unless address.present?
+          raise ArgumentError, "geocodable address could not be determined for #{place_name}"
+        end
+
+        place, place_created = create_place!(name: place_name, address: address)
+      end
 
       event = Event.create!(
         title: detail[:title],
@@ -64,10 +70,7 @@ module ImportEvent
       nil
     end
 
-    def find_or_create_place!(name:, address:)
-      existing = Place.find_by(name: name) || Place.find_by(address: address)
-      return [ existing, false ] if existing
-
+    def create_place!(name:, address:)
       place = Place.new(name: name, address: address)
       place.assign_coordinates_from_address
       place.save!
