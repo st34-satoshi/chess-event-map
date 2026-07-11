@@ -126,6 +126,39 @@ module ImportEvent
       refute infer_called
     end
 
+    test "reuses existing place by coordinates" do
+      detail_url = @detail_url
+      detail = @detail.merge(
+        place_name: "別名の会場",
+        place_address: "別の住所表記"
+      )
+      place = Place.create!(
+        name: "きゅりあん（品川区総合区民会館）",
+        address: "東京都品川区東大井5-18-1",
+        latitude: 35.6065,
+        longitude: 139.7345
+      )
+
+      stub_class_method(Client, :get, ->(_url) { "<html></html>" }) do
+        stub_class_method(Claude::EventExtractor, :extract, ->(_html, url:, existing_place_names:) { detail }) do
+          stub_class_method(PlaceGeocoder, :lookup, ->(_address) {
+            {
+              address: "東京都品川区東大井5-18-1",
+              latitude: 35.6065,
+              longitude: 139.7345
+            }
+          }) do
+            assert_no_difference("Place.count") do
+              result = EventImporter.call(url: detail_url)
+              assert_equal :created, result.status
+              refute result.place_created
+              assert_equal place, result.event.place
+            end
+          end
+        end
+      end
+    end
+
     test "raises when venue name is missing" do
       detail_url = @detail_url
       detail = @detail.merge(place_name: nil, place_address: nil)

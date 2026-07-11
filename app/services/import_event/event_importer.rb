@@ -42,7 +42,7 @@ module ImportEvent
           raise ArgumentError, "geocodable address could not be determined for #{place_name}"
         end
 
-        place, place_created = create_place!(name: place_name, address: address)
+        place, place_created = find_or_create_place!(name: place_name, address: address)
       end
 
       event = Event.create!(
@@ -70,9 +70,13 @@ module ImportEvent
       nil
     end
 
-    def create_place!(name:, address:)
+    def find_or_create_place!(name:, address:)
       place = Place.new(name: name, address: address)
       place.assign_coordinates_from_address
+
+      existing = Place.find_by(latitude: place.latitude, longitude: place.longitude)
+      return [ existing, false ] if existing
+
       place.save!
       [ place, true ]
     end
