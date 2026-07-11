@@ -3,7 +3,7 @@ require "anthropic"
 module Claude
   class EventExtractor
     class DetailResult < Anthropic::BaseModel
-      required :title, String, doc: "大会名、例会名、またはイベント名"
+      required :title, String, doc: "大会名、例会名、またはイベント名。原則は日本語表記"
       required :held_on, String, doc: "開催日（YYYY-MM-DD）。複数日開催の場合は初日"
       required :place_name, String, nil?: true, doc: "会場名。不明な場合は null"
       required :place_address, String, nil?: true, doc: "会場の住所。不明な場合は null"
@@ -12,7 +12,10 @@ module Claude
     SYSTEM_PROMPT = <<~PROMPT.freeze
       チェス関連のイベント要項ページのHTMLから、イベント情報を抽出してください。
       主催は日本チェス連盟に限らず、チェスクラブや団体など任意の組織のイベントを対象とします。
-      title は大会名・例会名・イベント名など、ページに記載されている正式名称です。
+      title は大会名・例会名・イベント名です。
+      title は原則として日本語表記で返してください。h1 見出し、記事タイトル、概要の大会名など、HTML本文に日本語名がある場合は必ずその日本語名を使ってください。
+      URLのスラッグや英語表記だけから title を推測しないでください（例: URLが caissa-pre-classic-rapid でも、h1が「Caissaプレクラシック・ラピッド大会」なら後者を使う）。
+      日本語名がHTML本文のどこにも見つからない場合だけ、英語表記を使ってください。
       held_on は YYYY-MM-DD 形式で、複数日開催の場合は初日を使ってください。
       place_name は会場名です（例: きゅりあん（品川区総合区民会館））。
       既存の会場名一覧が渡された場合、HTMLの会場と同じ施設が一覧にあれば、一覧の名前をそのまま place_name に使ってください。
