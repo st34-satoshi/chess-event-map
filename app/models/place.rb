@@ -1,12 +1,16 @@
 class Place < ApplicationRecord
   include PublicUid
 
+  JAPAN_LATITUDE_RANGE = 24.0..46.0
+  JAPAN_LONGITUDE_RANGE = 122.0..154.0
+
   has_many :events, dependent: :restrict_with_error
   has_many :requests, as: :correctable, dependent: :destroy
 
   validates :name, presence: true, uniqueness: { message: "はすでに登録されています" }
   validates :address, presence: true, uniqueness: { message: "はすでに登録されています" }
   validates :latitude, :longitude, presence: true
+  validate :coordinates_must_be_in_japan
   validate :coordinates_must_be_unique
 
   def assign_coordinates_from_address
@@ -19,6 +23,18 @@ class Place < ApplicationRecord
   end
 
   private
+
+  def coordinates_must_be_in_japan
+    return if latitude.blank? || longitude.blank?
+
+    return if self.class.japan_coordinates?(latitude:, longitude:)
+
+    errors.add(:base, "会場の緯度経度は日本国内である必要があります")
+  end
+
+  def self.japan_coordinates?(latitude:, longitude:)
+    JAPAN_LATITUDE_RANGE.cover?(latitude.to_f) && JAPAN_LONGITUDE_RANGE.cover?(longitude.to_f)
+  end
 
   def coordinates_must_be_unique
     return if latitude.blank? || longitude.blank?
