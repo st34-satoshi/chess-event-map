@@ -49,6 +49,10 @@ gem "rexml"
 gem "activeadmin"
 gem "devise", "~> 5.0"
 
+gem "nokogiri"
+gem "anthropic"
+
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
@@ -72,4 +76,5 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+  gem "webmock"
 end
