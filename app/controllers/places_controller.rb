@@ -15,7 +15,6 @@ class PlacesController < ApplicationController
     end
 
     if @place.save
-      NotifySlackOfPlaceJob.perform_later(@place.id)
       redirect_to @place, notice: "会場を登録しました。"
     else
       render :new, status: :unprocessable_entity

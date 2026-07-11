@@ -11,6 +11,9 @@ class NotifySlackOfPlaceJobTest < ActiveJob::TestCase
 
     assert_includes message, place.name
     assert_includes message, place.address
+    assert_includes message, place.latitude.to_s
+    assert_includes message, place.longitude.to_s
+    assert_includes message, "https://chess-event-map.stu345.com/places/#{place.public_uid}"
   end
 
   test "does nothing when the place no longer exists" do

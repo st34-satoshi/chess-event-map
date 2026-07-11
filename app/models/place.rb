@@ -4,6 +4,8 @@ class Place < ApplicationRecord
   has_many :events, dependent: :restrict_with_error
   has_many :requests, as: :correctable, dependent: :destroy
 
+  after_create_commit :notify_slack_of_creation
+
   validates :name, presence: true, uniqueness: { message: "はすでに登録されています" }
   validates :address, presence: true, uniqueness: { message: "はすでに登録されています" }
   validates :latitude, :longitude, presence: true
@@ -19,6 +21,10 @@ class Place < ApplicationRecord
   end
 
   private
+
+  def notify_slack_of_creation
+    NotifySlackOfPlaceJob.perform_later(id)
+  end
 
   def coordinates_must_be_unique
     return if latitude.blank? || longitude.blank?
