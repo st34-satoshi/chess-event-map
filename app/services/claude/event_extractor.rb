@@ -26,7 +26,7 @@ module Claude
 
     def extract(html, url:)
       detail_url = normalize_url(url)
-      raise Error, "invalid URL: #{url}" unless detail_url
+      raise Claude::Error, "invalid URL: #{url}" unless detail_url
 
       result = Client.request(
         system: SYSTEM_PROMPT,
@@ -37,7 +37,7 @@ module Claude
       held_on = parse_date(result.held_on)
       title = result.title.to_s.strip.presence
 
-      raise Error, "missing required detail fields" unless held_on && title
+      raise Claude::Error, "missing required detail fields" unless held_on && title
 
       {
         title: title,
