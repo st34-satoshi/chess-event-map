@@ -13,14 +13,14 @@ class XPostTest < ActiveSupport::TestCase
     assert_equal "pending", post.event_detection_status
   end
 
-  test "allows detected and not_detected statuses" do
+  test "allows detected and no_event statuses" do
     post = x_posts(:one)
 
     post.detected!
     assert post.detected?
 
-    post.not_detected!
-    assert post.not_detected?
+    post.no_event!
+    assert post.no_event?
 
     post.already_exists!
     assert post.already_exists?

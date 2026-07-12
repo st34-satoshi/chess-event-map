@@ -18,8 +18,8 @@ module ImportXPost
       )
 
       unless analysis[:has_event]
-        @x_post.not_detected!
-        return Result.new(status: :not_detected, x_post: @x_post)
+        @x_post.no_event!
+        return Result.new(status: :no_event, x_post: @x_post)
       end
 
       if analysis[:detail_url].present?

@@ -14,14 +14,14 @@ module ImportXPost
       )
     end
 
-    test "marks not_detected when post has no event info" do
+    test "marks no_event when post has no event info" do
       stub_class_method(Claude::XPostEventAnalyzer, :analyze, ->(_text, existing_place_names: []) {
         { has_event: false }
       }) do
         result = EventDetector.call(@post)
 
-        assert_equal :not_detected, result.status
-        assert @post.reload.not_detected?
+        assert_equal :no_event, result.status
+        assert @post.reload.no_event?
       end
     end
 
