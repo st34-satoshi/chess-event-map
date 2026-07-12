@@ -2,6 +2,10 @@ require "test_helper"
 
 module Claude
   class XPostEventAnalyzerTest < ActiveSupport::TestCase
+    setup do
+      travel_to Date.new(2026, 7, 12)
+    end
+
     test "returns event fields when has_event is true" do
       analysis = XPostEventAnalyzer::AnalysisResult.new(
         has_event: true,
@@ -21,7 +25,9 @@ module Claude
         assert_equal "アマノ芸術創造センター名古屋", result[:place_name]
         assert_equal "愛知県名古屋市中区栄1-1", result[:place_address]
         assert_equal "https://example.com/event", result[:detail_url]
+        assert_includes captured[:user_message], "実行日: 2026-07-12"
         assert_includes captured[:user_message], "以下のX投稿を判定してください"
+        assert_includes captured[:system], "実行日（2026-07-12）に最も近い妥当な年"
       end
     end
 
@@ -84,6 +90,24 @@ module Claude
         result = XPostEventAnalyzer.analyze("今日の対局楽しかった")
 
         assert_equal({ has_event: false }, result)
+      end
+    end
+
+    test "raises when held_on is more than six months from today" do
+      analysis = XPostEventAnalyzer::AnalysisResult.new(
+        has_event: true,
+        title: "遠すぎる大会",
+        held_on: "2027-02-01",
+        place_name: "会場",
+        place_address: nil,
+        detail_url: nil
+      )
+
+      stub_request(analysis) do
+        error = assert_raises(Error) do
+          XPostEventAnalyzer.analyze("来年の大会のお知らせ")
+        end
+        assert_match(/more than 6 months/, error.message)
       end
     end
 

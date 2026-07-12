@@ -1,6 +1,10 @@
 require "test_helper"
 
 class Claude::EventExtractorTest < ActiveSupport::TestCase
+  setup do
+    travel_to Date.new(2026, 7, 12)
+  end
+
   test "extracts detail fields" do
     detail = Claude::EventExtractor::DetailResult.new(
       title: " サマーオープン2026 ",
@@ -16,7 +20,9 @@ class Claude::EventExtractorTest < ActiveSupport::TestCase
       assert_equal "https://japanchess.org/2026/05/summer2026-2/", result[:detail_url]
       assert_equal "きゅりあん（品川区総合区民会館）", result[:place_name]
       assert_equal "東京都品川区東大井5-18-1", result[:place_address]
+      assert_includes captured[:user_message], "実行日: 2026-07-12"
       assert_includes captured[:user_message], "以下のHTMLからイベント情報を抽出してください"
+      assert_includes captured[:system], "実行日（2026-07-12）に最も近い妥当な年"
     end
   end
 
@@ -62,6 +68,22 @@ class Claude::EventExtractorTest < ActiveSupport::TestCase
     end
   end
 
+  test "raises when held_on is more than six months from today" do
+    detail = Claude::EventExtractor::DetailResult.new(
+      title: "遠すぎる大会",
+      held_on: "2025-12-01",
+      place_name: "きゅりあん",
+      place_address: nil
+    )
+
+    stub_request(detail) do
+      error = assert_raises(Claude::Error) do
+        Claude::EventExtractor.extract("<html></html>", url: "https://example.com/event")
+      end
+      assert_match(/more than 6 months/, error.message)
+    end
+  end
+
   test "raises when anthropic api key is missing" do
     stub_credentials(api_key: nil) do
       assert_raises(Claude::Error) do
@@ -73,27 +95,14 @@ class Claude::EventExtractorTest < ActiveSupport::TestCase
   private
 
   def stub_request(parsed_output)
-    message = Object.new
-    message.define_singleton_method(:parsed_output) { parsed_output }
-
     captured = {}
-    messages = Object.new
-    messages.define_singleton_method(:create) do |**kwargs|
-      captured[:user_message] = kwargs.dig(:messages, 0, :content)
-      message
-    end
-
-    client = Object.new
-    client.define_singleton_method(:messages) { messages }
-
-    stub_credentials(api_key: "test-key") do
-      original_client = Claude::Client.method(:client)
-      Claude::Client.define_singleton_method(:client) { client }
-      begin
-        yield captured
-      ensure
-        Claude::Client.define_singleton_method(:client, original_client)
-      end
+    stub_class_method(Claude::Client, :request, ->(user:, format:, system:) {
+      captured[:user_message] = user
+      captured[:format] = format
+      captured[:system] = system
+      parsed_output
+    }) do
+      yield captured
     end
   end
 
