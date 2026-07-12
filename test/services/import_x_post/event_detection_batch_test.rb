@@ -104,7 +104,7 @@ class ImportXPost::EventDetectionBatchTest < ActiveSupport::TestCase
 
     processed_ids = []
 
-    stub_class_method(SlackNotifier, :notify, ->(*) {}) do
+    stub_class_method(SlackNotifier, :notify, ->(*) { }) do
       stub_class_method(ImportXPost::EventDetector, :call, lambda { |x_post|
         processed_ids << x_post.x_post_id
         x_post.not_detected!
