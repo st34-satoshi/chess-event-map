@@ -14,10 +14,14 @@ module ImportEvent
       detail_url = normalize_url(@url)
       raise ArgumentError, "invalid URL: #{@url}" unless detail_url
 
-      html = Client.get(detail_url)
-      cleaned = HtmlCleaner.clean(html)
+      response = Client.fetch(detail_url)
+      cleaned = HtmlCleaner.clean(response.body)
       existing_place_names = Place.order(:name).pluck(:name)
-      detail = Claude::EventExtractor.extract(cleaned, url: detail_url, existing_place_names: existing_place_names)
+      detail = Claude::EventExtractor.extract(
+        cleaned,
+        url: response.url,
+        existing_place_names: existing_place_names
+      )
 
       if Event.exists?(held_on: detail[:held_on], url: detail[:detail_url])
         event = Event.find_by!(held_on: detail[:held_on], url: detail[:detail_url])
@@ -43,6 +47,12 @@ module ImportEvent
         end
 
         place, place_created = find_or_create_place!(name: place_name, address: address)
+      end
+
+      if Event.exists?(held_on: detail[:held_on], place_id: place.id)
+        event = Event.find_by!(held_on: detail[:held_on], place_id: place.id)
+        Rails.logger.info("Event already exists for place and date: #{event.title} (#{event.held_on})")
+        return Result.new(status: :skipped, event: event, place_created: false)
       end
 
       event = Event.create!(

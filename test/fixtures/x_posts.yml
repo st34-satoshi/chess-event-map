@@ -7,6 +7,7 @@ one:
   posted_at: 2026-07-12 08:20:57
   url: https://example.com/posts/one
   public_uid: publicuid07
+  event_detection_status: pending
 
 two:
   x_account: two
@@ -15,3 +16,4 @@ two:
   posted_at: 2026-07-12 08:20:57
   url: https://example.com/posts/two
   public_uid: publicuid08
+  event_detection_status: pending

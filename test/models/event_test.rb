@@ -6,4 +6,16 @@ class EventTest < ActiveSupport::TestCase
 
     assert event.human?
   end
+
+  test "rejects duplicate held_on and place" do
+    existing = events(:one)
+    event = Event.new(
+      title: "重複大会",
+      held_on: existing.held_on,
+      place: existing.place
+    )
+
+    assert_not event.valid?
+    assert_includes event.errors[:held_on], "と同じ会場のイベントはすでに登録されています"
+  end
 end
