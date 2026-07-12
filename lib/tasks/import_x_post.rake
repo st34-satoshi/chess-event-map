@@ -15,14 +15,14 @@ namespace :import_x_post do
     abort "Import failed: #{e.message}"
   end
 
-  desc "Detect events in pending X posts via Claude"
-  task detect_events: :environment do
+  desc "Detect and save events from pending X posts via Claude"
+  task save_events: :environment do
     result = ImportXPost::EventDetectionBatch.call do |detection|
       puts "#{detection.status}: #{detection.x_post.public_uid} (@#{detection.x_post.x_account.at_name})"
     end
 
     puts "Done. #{result.counts.map { |status, count| "#{status}=#{count}" }.join(' ')}"
   rescue Claude::Error, ActiveRecord::RecordInvalid => e
-    abort "Detection failed: #{e.message}"
+    abort "Save events failed: #{e.message}"
   end
 end
