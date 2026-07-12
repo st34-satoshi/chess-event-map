@@ -21,9 +21,9 @@ module ImportEvent
       fetched_url = nil
       extracted_args = nil
 
-      stub_class_method(Client, :get, ->(url) {
+      stub_class_method(Client, :fetch, ->(url) {
         fetched_url = url
-        html
+        Client::Response.new(url: url, body: html)
       }) do
         stub_class_method(Claude::EventExtractor, :extract, ->(html, url:, existing_place_names:) {
           extracted_args = { html: html, url: url, existing_place_names: existing_place_names }
@@ -55,6 +55,36 @@ module ImportEvent
       assert_includes extracted_args[:existing_place_names], places(:two).name
     end
 
+    test "uses redirected url when fetching a short link" do
+      short_url = "https://t.co/3cFeQZnMCg"
+      final_url = @detail_url
+      detail = @detail
+      extracted_url = nil
+
+      stub_class_method(Client, :fetch, ->(_url) {
+        Client::Response.new(url: final_url, body: "<html></html>")
+      }) do
+        stub_class_method(Claude::EventExtractor, :extract, ->(_html, url:, existing_place_names:) {
+          extracted_url = url
+          detail
+        }) do
+          stub_class_method(PlaceGeocoder, :lookup, ->(_address) {
+            {
+              address: "東京都品川区東大井5-18-1",
+              latitude: 35.6065,
+              longitude: 139.7345
+            }
+          }) do
+            result = EventImporter.call(url: short_url)
+            assert_equal :created, result.status
+            assert_equal final_url, result.event.url
+          end
+        end
+      end
+
+      assert_equal final_url, extracted_url
+    end
+
     test "skips existing event by held_on and url" do
       detail_url = @detail_url
       detail = @detail
@@ -65,7 +95,7 @@ module ImportEvent
         place: places(:one)
       )
 
-      stub_class_method(Client, :get, ->(_url) { "<html></html>" }) do
+      stub_fetch(detail_url) do
         stub_class_method(Claude::EventExtractor, :extract, ->(_html, url:, existing_place_names:) { detail }) do
           assert_no_difference("Event.count") do
             result = EventImporter.call(url: detail_url)
@@ -86,7 +116,7 @@ module ImportEvent
         longitude: 139.7
       )
 
-      stub_class_method(Client, :get, ->(_url) { "<html></html>" }) do
+      stub_fetch(detail_url) do
         stub_class_method(Claude::EventExtractor, :extract, ->(_html, url:, existing_place_names:) { detail }) do
           assert_no_difference("Place.count") do
             result = EventImporter.call(url: detail_url)
@@ -111,7 +141,7 @@ module ImportEvent
       )
       infer_called = false
 
-      stub_class_method(Client, :get, ->(_url) { "<html></html>" }) do
+      stub_fetch(detail_url) do
         stub_class_method(Claude::EventExtractor, :extract, ->(_html, url:, existing_place_names:) { detail }) do
           stub_class_method(Claude::AddressInferrer, :infer, ->(place_name:) {
             infer_called = true
@@ -143,7 +173,7 @@ module ImportEvent
         longitude: 139.7345
       )
 
-      stub_class_method(Client, :get, ->(_url) { "<html></html>" }) do
+      stub_fetch(detail_url) do
         stub_class_method(Claude::EventExtractor, :extract, ->(_html, url:, existing_place_names:) { detail }) do
           stub_class_method(PlaceGeocoder, :lookup, ->(_address) {
             {
@@ -167,7 +197,7 @@ module ImportEvent
       detail_url = @detail_url
       detail = @detail.merge(place_name: nil, place_address: nil)
 
-      stub_class_method(Client, :get, ->(_url) { "<html></html>" }) do
+      stub_fetch(detail_url) do
         stub_class_method(Claude::EventExtractor, :extract, ->(_html, url:, existing_place_names:) { detail }) do
           error = assert_raises(ArgumentError) do
             EventImporter.call(url: detail_url)
@@ -183,7 +213,7 @@ module ImportEvent
       inferred_place_name = nil
       geocoded_address = nil
 
-      stub_class_method(Client, :get, ->(_url) { "<html></html>" }) do
+      stub_fetch(detail_url) do
         stub_class_method(Claude::EventExtractor, :extract, ->(_html, url:, existing_place_names:) { detail }) do
           stub_class_method(Claude::AddressInferrer, :infer, ->(place_name:) {
             inferred_place_name = place_name
@@ -208,6 +238,14 @@ module ImportEvent
 
       assert_equal detail[:place_name], inferred_place_name
       assert_equal "東京都品川区東大井5-18-1", geocoded_address
+    end
+
+    private
+
+    def stub_fetch(url, body: "<html></html>", &block)
+      stub_class_method(Client, :fetch, ->(_requested_url) {
+        Client::Response.new(url: url, body: body)
+      }, &block)
     end
   end
 end
