@@ -3,13 +3,13 @@
 one:
   name: MyString1
   address: MyText1
-  latitude: 9.99
-  longitude: 9.99
+  latitude: 35.681236
+  longitude: 139.767125
   public_uid: publicuid01
 
 two:
   name: MyString2
   address: MyText2
-  latitude: 19.99
-  longitude: 19.99
+  latitude: 34.702485
+  longitude: 135.495951
   public_uid: publicuid02
