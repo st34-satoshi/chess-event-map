@@ -18,7 +18,8 @@ module XApi
       loop do
         params = {
           "tweet.fields" => TWEET_FIELDS,
-          "max_results" => MAX_RESULTS
+          "max_results" => MAX_RESULTS,
+          "exclude" => "retweets,replies"
         }
         params["since_id"] = since_id if since_id.present?
         params["start_time"] = start_time.utc.iso8601 if start_time

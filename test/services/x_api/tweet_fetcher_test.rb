@@ -6,7 +6,12 @@ module XApi
       stub_credentials(bearer_token: "test-token") do
         stub_request(:get, "https://api.x.com/2/users/111/tweets")
           .with(
-            query: hash_including("tweet.fields" => "created_at", "max_results" => "100", "since_id" => "100"),
+            query: hash_including(
+              "tweet.fields" => "created_at",
+              "max_results" => "100",
+              "exclude" => "retweets,replies",
+              "since_id" => "100"
+            ),
             headers: { "Authorization" => "Bearer test-token" }
           )
           .to_return(
@@ -25,6 +30,7 @@ module XApi
             query: hash_including(
               "tweet.fields" => "created_at",
               "max_results" => "100",
+              "exclude" => "retweets,replies",
               "since_id" => "100",
               "pagination_token" => "page-2"
             )
