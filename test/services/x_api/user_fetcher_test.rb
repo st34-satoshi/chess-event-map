@@ -1,7 +1,7 @@
 require "test_helper"
 
 module XApi
-  class ClientTest < ActiveSupport::TestCase
+  class UserFetcherTest < ActiveSupport::TestCase
     test "returns user profile fields from the API" do
       stub_credentials(bearer_token: "test-token") do
         stub_request(:get, "https://api.x.com/2/users/by/username/JapanChessFed")
@@ -22,7 +22,7 @@ module XApi
             }.to_json
           )
 
-        profile = Client.get_user_by_username("JapanChessFed")
+        profile = UserFetcher.get_by_username("JapanChessFed")
 
         assert_equal "12345", profile[:x_user_id]
         assert_equal "JapanChessFed", profile[:at_name]
@@ -33,7 +33,7 @@ module XApi
 
     test "raises when bearer token is missing" do
       stub_credentials(bearer_token: nil) do
-        error = assert_raises(Error) { Client.get_user_by_username("JapanChessFed") }
+        error = assert_raises(Error) { UserFetcher.get_by_username("JapanChessFed") }
         assert_equal "X API bearer token is missing", error.message
       end
     end
@@ -50,7 +50,7 @@ module XApi
             }.to_json
           )
 
-        error = assert_raises(Error) { Client.get_user_by_username("missing") }
+        error = assert_raises(Error) { UserFetcher.get_by_username("missing") }
         assert_match(/Could not find user/, error.message)
       end
     end

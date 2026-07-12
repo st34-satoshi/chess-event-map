@@ -27,7 +27,7 @@ module ImportXAccount
           next
         end
 
-        profile = XApi::Client.get_user_by_username(at_name)
+        profile = XApi::UserFetcher.get_by_username(at_name)
 
         if XAccount.exists?(x_user_id: profile[:x_user_id]) || XAccount.exists?(at_name: profile[:at_name])
           skipped << profile[:at_name]
