@@ -63,6 +63,41 @@ class ImportXPost::EventDetectionBatchTest < ActiveSupport::TestCase
     assert_includes messages.last, "対象: 0件"
   end
 
+  test "includes save_failed error details in the finish Slack notification" do
+    create_pending_post!(x_post_id: "ok", text: "ok")
+    failed = create_pending_post!(x_post_id: "ng", text: "ng")
+
+    messages = []
+
+    stub_class_method(SlackNotifier, :notify, ->(text) { messages << text }) do
+      stub_class_method(ImportXPost::EventDetector, :call, lambda { |x_post|
+        if x_post.x_post_id == "ng"
+          x_post.save_failed!
+          ImportXPost::EventDetector::Result.new(
+            status: :save_failed,
+            x_post: x_post,
+            error: "Validation failed: 会場の緯度経度は日本国内である必要があります"
+          )
+        else
+          x_post.detected!
+          ImportXPost::EventDetector::Result.new(status: :detected, x_post: x_post)
+        end
+      }) do
+        result = ImportXPost::EventDetectionBatch.call
+
+        assert_equal 1, result.counts[:detected]
+        assert_equal 1, result.counts[:save_failed]
+        assert_equal 1, result.errors.size
+      end
+    end
+
+    assert_equal 2, messages.size
+    assert_includes messages.last, "失敗詳細:"
+    assert_includes messages.last, failed.public_uid
+    assert_includes messages.last, "@batch_user"
+    assert_includes messages.last, "会場の緯度経度は日本国内である必要があります"
+  end
+
   test "skips pending posts older than one month" do
     recent = create_pending_post!(x_post_id: "recent", text: "recent", posted_at: 1.day.ago)
     create_pending_post!(x_post_id: "old", text: "old", posted_at: 2.months.ago)

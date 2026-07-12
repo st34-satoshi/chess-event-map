@@ -25,6 +25,7 @@ namespace :import_x_post do
 
     puts "Done. #{result.counts.map { |status, count| "#{status}=#{count}" }.join(' ')}"
   rescue Claude::Error, ActiveRecord::RecordInvalid => e
+    SlackNotifier.notify("【チェスイベントマップ】X投稿のイベント調査が失敗しました。\n#{e.message}")
     abort "Save events failed: #{e.message}"
   end
 
