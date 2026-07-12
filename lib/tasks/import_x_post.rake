@@ -27,4 +27,10 @@ namespace :import_x_post do
   rescue Claude::Error, ActiveRecord::RecordInvalid => e
     abort "Save events failed: #{e.message}"
   end
+
+  desc "Reset save_failed X posts from the last month back to pending"
+  task reset_save_failed: :environment do
+    count = ImportXPost::SaveFailedResetter.call
+    puts "Done. reset=#{count}"
+  end
 end
