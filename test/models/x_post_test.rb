@@ -21,5 +21,11 @@ class XPostTest < ActiveSupport::TestCase
 
     post.not_detected!
     assert post.not_detected?
+
+    post.already_exists!
+    assert post.already_exists?
+
+    post.save_failed!
+    assert post.save_failed?
   end
 end

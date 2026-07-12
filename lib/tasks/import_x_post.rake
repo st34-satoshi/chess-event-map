@@ -14,4 +14,19 @@ namespace :import_x_post do
   rescue XApi::Error, ActiveRecord::RecordInvalid => e
     abort "Import failed: #{e.message}"
   end
+
+  desc "Detect events in pending X posts via Claude"
+  task detect_events: :environment do
+    counts = Hash.new(0)
+
+    XPost.pending.find_each do |x_post|
+      result = ImportXPost::EventDetector.call(x_post)
+      counts[result.status] += 1
+      puts "#{result.status}: #{x_post.public_uid} (@#{x_post.x_account.at_name})"
+    end
+
+    puts "Done. #{counts.map { |status, count| "#{status}=#{count}" }.join(' ')}"
+  rescue Claude::Error, ActiveRecord::RecordInvalid => e
+    abort "Detection failed: #{e.message}"
+  end
 end

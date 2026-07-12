@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_12_090319) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_12_091058) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "author_id"
     t.string "author_type"
@@ -46,6 +46,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_12_090319) do
     t.string "title"
     t.datetime "updated_at", null: false
     t.string "url"
+    t.index ["held_on", "place_id"], name: "index_events_on_held_on_and_place_id", unique: true
     t.index ["place_id"], name: "index_events_on_place_id"
     t.index ["public_uid"], name: "index_events_on_public_uid", unique: true
   end

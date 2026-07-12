@@ -8,7 +8,10 @@ class Event < ApplicationRecord
   after_create_commit :notify_slack_of_creation
 
   validates :title, presence: true
-  validates :held_on, presence: true
+  validates :held_on, presence: true, uniqueness: {
+    scope: :place_id,
+    message: "と同じ会場のイベントはすでに登録されています"
+  }
   validates :url,
     format: URI::DEFAULT_PARSER.make_regexp(%w[http https]),
     length: { maximum: 255 },

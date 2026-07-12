@@ -45,6 +45,12 @@ module ImportEvent
         place, place_created = find_or_create_place!(name: place_name, address: address)
       end
 
+      if Event.exists?(held_on: detail[:held_on], place_id: place.id)
+        event = Event.find_by!(held_on: detail[:held_on], place_id: place.id)
+        Rails.logger.info("Event already exists for place and date: #{event.title} (#{event.held_on})")
+        return Result.new(status: :skipped, event: event, place_created: false)
+      end
+
       event = Event.create!(
         title: detail[:title],
         held_on: detail[:held_on],
