@@ -1,6 +1,6 @@
 module ImportXPost
   class EventDetector
-    Result = Struct.new(:status, :x_post, :event, :place_created, keyword_init: true)
+    Result = Struct.new(:status, :x_post, :event, :place_created, :error, keyword_init: true)
 
     def self.call(x_post)
       new(x_post).call
@@ -29,9 +29,7 @@ module ImportXPost
       end
     rescue Claude::Error, ArgumentError, ImportEvent::Client::RequestError,
            PlaceGeocoder::GeocodingError, ActiveRecord::RecordInvalid => e
-      Rails.logger.warn("XPost event detection failed for #{@x_post.public_uid}: #{e.message}")
-      @x_post.save_failed!
-      Result.new(status: :save_failed, x_post: @x_post)
+      fail_save!(e.message)
     end
 
     private
@@ -47,14 +45,13 @@ module ImportXPost
         @x_post.already_exists!
         Result.new(status: :already_exists, x_post: @x_post, event: result.event, place_created: false)
       else
-        @x_post.save_failed!
-        Result.new(status: :save_failed, x_post: @x_post)
+        fail_save!("unexpected import status: #{result.status}")
       end
     end
 
     def import_from_analysis(analysis)
       unless analysis[:title].present? && analysis[:held_on].present? && analysis[:place_name].present?
-        raise ArgumentError, "event fields are incomplete"
+        raise ArgumentError, "event fields are incomplete: title=#{analysis[:title].inspect} held_on=#{analysis[:held_on].inspect} place_name=#{analysis[:place_name].inspect}"
       end
 
       place, place_created = find_or_create_place!(
@@ -95,6 +92,12 @@ module ImportXPost
 
       place.save!
       [ place, true ]
+    end
+
+    def fail_save!(message)
+      Rails.logger.warn("XPost event detection failed for #{@x_post.public_uid}: #{message}")
+      @x_post.save_failed!
+      Result.new(status: :save_failed, x_post: @x_post, error: message)
     end
   end
 end

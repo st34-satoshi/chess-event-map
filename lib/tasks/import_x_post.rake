@@ -18,7 +18,9 @@ namespace :import_x_post do
   desc "Detect and save events from pending X posts via Claude"
   task save_events: :environment do
     result = ImportXPost::EventDetectionBatch.call do |detection|
-      puts "#{detection.status}: #{detection.x_post.public_uid} (@#{detection.x_post.x_account.at_name})"
+      line = "#{detection.status}: #{detection.x_post.public_uid} (@#{detection.x_post.x_account.at_name})"
+      line = "#{line} — #{detection.error}" if detection.error.present?
+      puts line
     end
 
     puts "Done. #{result.counts.map { |status, count| "#{status}=#{count}" }.join(' ')}"

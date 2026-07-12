@@ -156,6 +156,27 @@ module ImportXPost
 
         assert_equal :save_failed, result.status
         assert @post.reload.save_failed?
+        assert_includes result.error, "event fields are incomplete"
+      end
+    end
+
+    test "includes error message when geocoding address cannot be determined" do
+      stub_class_method(Claude::XPostEventAnalyzer, :analyze, ->(_text, existing_place_names: []) {
+        {
+          has_event: true,
+          title: "例会",
+          held_on: Date.new(2026, 8, 1),
+          place_name: "Unknown Venue",
+          place_address: nil,
+          detail_url: nil
+        }
+      }) do
+        stub_class_method(Claude::AddressInferrer, :infer, ->(place_name:) { nil }) do
+          result = EventDetector.call(@post)
+
+          assert_equal :save_failed, result.status
+          assert_includes result.error, "geocodable address could not be determined for Unknown Venue"
+        end
       end
     end
   end
