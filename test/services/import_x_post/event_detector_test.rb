@@ -15,7 +15,7 @@ module ImportXPost
     end
 
     test "marks not_detected when post has no event info" do
-      stub_class_method(Claude::XPostEventAnalyzer, :analyze, ->(_text) {
+      stub_class_method(Claude::XPostEventAnalyzer, :analyze, ->(_text, existing_place_names: []) {
         { has_event: false }
       }) do
         result = EventDetector.call(@post)
@@ -25,11 +25,26 @@ module ImportXPost
       end
     end
 
+    test "passes existing place names to analyzer" do
+      analyzed_args = nil
+
+      stub_class_method(Claude::XPostEventAnalyzer, :analyze, ->(text, existing_place_names: []) {
+        analyzed_args = { text: text, existing_place_names: existing_place_names }
+        { has_event: false }
+      }) do
+        EventDetector.call(@post)
+      end
+
+      assert_equal @post.text, analyzed_args[:text]
+      assert_includes analyzed_args[:existing_place_names], places(:one).name
+      assert_includes analyzed_args[:existing_place_names], places(:two).name
+    end
+
     test "imports from detail url and marks detected" do
       event = events(:one)
       imported_url = nil
 
-      stub_class_method(Claude::XPostEventAnalyzer, :analyze, ->(_text) {
+      stub_class_method(Claude::XPostEventAnalyzer, :analyze, ->(_text, existing_place_names: []) {
         {
           has_event: true,
           title: "例会",
@@ -57,7 +72,7 @@ module ImportXPost
     test "marks already_exists when url import is skipped" do
       event = events(:one)
 
-      stub_class_method(Claude::XPostEventAnalyzer, :analyze, ->(_text) {
+      stub_class_method(Claude::XPostEventAnalyzer, :analyze, ->(_text, existing_place_names: []) {
         {
           has_event: true,
           title: "例会",
@@ -81,7 +96,7 @@ module ImportXPost
     test "creates event from analysis without detail url" do
       place = places(:one)
 
-      stub_class_method(Claude::XPostEventAnalyzer, :analyze, ->(_text) {
+      stub_class_method(Claude::XPostEventAnalyzer, :analyze, ->(_text, existing_place_names: []) {
         {
           has_event: true,
           title: "名古屋例会",
@@ -106,7 +121,7 @@ module ImportXPost
     test "marks already_exists when held_on and place already exist" do
       existing = events(:one)
 
-      stub_class_method(Claude::XPostEventAnalyzer, :analyze, ->(_text) {
+      stub_class_method(Claude::XPostEventAnalyzer, :analyze, ->(_text, existing_place_names: []) {
         {
           has_event: true,
           title: "別タイトル",
@@ -127,7 +142,7 @@ module ImportXPost
     end
 
     test "marks save_failed when required fields are incomplete" do
-      stub_class_method(Claude::XPostEventAnalyzer, :analyze, ->(_text) {
+      stub_class_method(Claude::XPostEventAnalyzer, :analyze, ->(_text, existing_place_names: []) {
         {
           has_event: true,
           title: nil,

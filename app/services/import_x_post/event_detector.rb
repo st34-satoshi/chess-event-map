@@ -11,7 +11,11 @@ module ImportXPost
     end
 
     def call
-      analysis = Claude::XPostEventAnalyzer.analyze(@x_post.text)
+      existing_place_names = Place.order(:name).pluck(:name)
+      analysis = Claude::XPostEventAnalyzer.analyze(
+        @x_post.text,
+        existing_place_names: existing_place_names
+      )
 
       unless analysis[:has_event]
         @x_post.not_detected!
