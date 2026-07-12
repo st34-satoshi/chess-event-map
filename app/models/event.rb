@@ -1,5 +1,6 @@
 class Event < ApplicationRecord
   include PublicUid
+  include CreatedBySource
 
   belongs_to :place
   has_many :requests, as: :correctable, dependent: :destroy
