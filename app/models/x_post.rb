@@ -3,6 +3,12 @@ class XPost < ApplicationRecord
 
   belongs_to :x_account
 
+  enum :event_detection_status, {
+    pending: "pending",
+    detected: "detected",
+    not_detected: "not_detected"
+  }, default: "pending"
+
   validates :x_post_id, presence: true, uniqueness: true
   validates :text, presence: true
   validates :posted_at, presence: true

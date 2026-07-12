@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_12_082057) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_12_090319) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "author_id"
     t.string "author_type"
@@ -228,6 +228,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_12_082057) do
 
   create_table "x_posts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.string "event_detection_status", default: "pending", null: false
     t.datetime "posted_at"
     t.string "public_uid"
     t.text "text"
@@ -235,6 +236,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_12_082057) do
     t.string "url"
     t.bigint "x_account_id", null: false
     t.string "x_post_id"
+    t.index ["event_detection_status"], name: "index_x_posts_on_event_detection_status"
     t.index ["public_uid"], name: "index_x_posts_on_public_uid", unique: true
     t.index ["x_account_id"], name: "index_x_posts_on_x_account_id"
     t.index ["x_post_id"], name: "index_x_posts_on_x_post_id", unique: true
