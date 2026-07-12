@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  at_name: chess_tokyo
+  x_user_id: "1000000001"
+  display_name: Chess Tokyo
+  profile_image_url: https://example.com/one.png
+  public_uid: publicuid05
+
+two:
+  at_name: chess_osaka
+  x_user_id: "1000000002"
+  display_name: Chess Osaka
+  profile_image_url: https://example.com/two.png
+  public_uid: publicuid06
