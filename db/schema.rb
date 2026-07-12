@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_09_151242) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_12_030800) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "author_id"
     t.string "author_type"
@@ -39,6 +39,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_09_151242) do
 
   create_table "events", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.string "created_by", default: "human", null: false
     t.date "held_on"
     t.bigint "place_id", null: false
     t.string "public_uid", null: false
@@ -52,6 +53,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_09_151242) do
   create_table "places", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.text "address"
     t.datetime "created_at", null: false
+    t.string "created_by", default: "human", null: false
     t.decimal "latitude", precision: 10, scale: 7
     t.decimal "longitude", precision: 10, scale: 7
     t.string "name"
