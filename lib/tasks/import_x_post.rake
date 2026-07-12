@@ -17,15 +17,11 @@ namespace :import_x_post do
 
   desc "Detect events in pending X posts via Claude"
   task detect_events: :environment do
-    counts = Hash.new(0)
-
-    XPost.pending.find_each do |x_post|
-      result = ImportXPost::EventDetector.call(x_post)
-      counts[result.status] += 1
-      puts "#{result.status}: #{x_post.public_uid} (@#{x_post.x_account.at_name})"
+    result = ImportXPost::EventDetectionBatch.call do |detection|
+      puts "#{detection.status}: #{detection.x_post.public_uid} (@#{detection.x_post.x_account.at_name})"
     end
 
-    puts "Done. #{counts.map { |status, count| "#{status}=#{count}" }.join(' ')}"
+    puts "Done. #{result.counts.map { |status, count| "#{status}=#{count}" }.join(' ')}"
   rescue Claude::Error, ActiveRecord::RecordInvalid => e
     abort "Detection failed: #{e.message}"
   end
