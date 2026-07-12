@@ -141,6 +141,7 @@ textarea.form__input {
   font-size: 1rem;
   color: #333;
   line-height: 1.5;
+  overflow-wrap: anywhere;
   word-break: break-word;
 }
 
@@ -151,6 +152,8 @@ textarea.form__input {
 .form__link {
   color: #333;
   text-decoration: underline;
+  overflow-wrap: anywhere;
+  word-break: break-all;
 }
 
 .form__link:hover {

@@ -6,11 +6,22 @@
  *= require_self
  */
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  overflow-x: clip;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow-x: clip;
 }
 
 .flash {
@@ -38,7 +49,7 @@ body {
 
 main {
   flex: 1;
-  max-width: 1200px;
+  max-width: min(1200px, 100%);
   margin: 0 auto;
   padding: 1.5rem 1rem;
   width: 100%;
