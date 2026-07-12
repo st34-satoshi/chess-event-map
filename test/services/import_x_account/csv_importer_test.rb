@@ -87,7 +87,7 @@ module ImportXAccount
 
     def stub_user_lookup(looked_up = nil, &block)
       profiles = @profiles
-      stub_class_method(XApi::Client, :get_user_by_username, ->(username) {
+      stub_class_method(XApi::UserFetcher, :get_by_username, ->(username) {
         looked_up << username if looked_up
         profiles.fetch(username)
       }, &block)

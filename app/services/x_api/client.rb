@@ -6,33 +6,14 @@ module XApi
   class Client
     BASE_URL = "https://api.x.com/2"
     TIMEOUT_SECONDS = 30
-    USER_FIELDS = "profile_image_url"
 
-    def self.get_user_by_username(username)
-      new.get_user_by_username(username)
+    def self.get_json(uri)
+      new.get_json(uri)
     end
 
-    def get_user_by_username(username)
-      raise Error, "username is blank" if username.blank?
-
-      uri = URI("#{BASE_URL}/users/by/username/#{URI.encode_uri_component(username)}")
-      uri.query = URI.encode_www_form("user.fields" => USER_FIELDS)
-
+    def get_json(uri)
       response = request(uri)
-      body = JSON.parse(response.body)
-      data = body["data"]
-
-      unless data.is_a?(Hash) && data["id"].present?
-        detail = body.dig("errors", 0, "detail") || body.dig("errors", 0, "title") || "user not found"
-        raise Error, "failed to lookup @#{username}: #{detail}"
-      end
-
-      {
-        x_user_id: data.fetch("id"),
-        at_name: data.fetch("username"),
-        display_name: data.fetch("name"),
-        profile_image_url: data["profile_image_url"]
-      }
+      JSON.parse(response.body)
     end
 
     private
