@@ -1,8 +1,6 @@
 class NotifySlackOfEventJob < ApplicationJob
   queue_as :default
 
-  BASE_URL = "https://chess-event-map.stu345.com"
-
   def perform(event_id)
     event = Event.find_by(id: event_id)
     return unless event
@@ -18,7 +16,7 @@ class NotifySlackOfEventJob < ApplicationJob
       イベント名: #{event.title}
       開催日: #{event.held_on}
       会場: #{event.place.name}
-      #{BASE_URL}/events/#{event.public_uid}
+      #{app_base_url}/events/#{event.public_uid}
     TEXT
   end
 end
