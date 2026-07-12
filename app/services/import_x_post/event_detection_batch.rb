@@ -1,5 +1,7 @@
 module ImportXPost
   class EventDetectionBatch
+    LOOKBACK = 1.month
+
     Result = Struct.new(:pending_count, :counts, keyword_init: true)
 
     def self.call(&block)
@@ -7,7 +9,7 @@ module ImportXPost
     end
 
     def call(&block)
-      pending_posts = XPost.pending
+      pending_posts = XPost.pending.where(posted_at: LOOKBACK.ago..)
       pending_count = pending_posts.count
       notify_start(pending_count)
 

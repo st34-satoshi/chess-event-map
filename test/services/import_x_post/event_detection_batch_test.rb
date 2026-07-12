@@ -63,14 +63,38 @@ class ImportXPost::EventDetectionBatchTest < ActiveSupport::TestCase
     assert_includes messages.last, "対象: 0件"
   end
 
+  test "skips pending posts older than one month" do
+    recent = create_pending_post!(x_post_id: "recent", text: "recent", posted_at: 1.day.ago)
+    create_pending_post!(x_post_id: "old", text: "old", posted_at: 2.months.ago)
+
+    processed_ids = []
+
+    stub_class_method(SlackNotifier, :notify, ->(*) {}) do
+      stub_class_method(ImportXPost::EventDetector, :call, lambda { |x_post|
+        processed_ids << x_post.x_post_id
+        x_post.not_detected!
+        ImportXPost::EventDetector::Result.new(status: :not_detected, x_post: x_post)
+      }) do
+        result = ImportXPost::EventDetectionBatch.call
+
+        assert_equal 1, result.pending_count
+        assert_equal 1, result.counts[:not_detected]
+      end
+    end
+
+    assert_equal [ "recent" ], processed_ids
+    assert recent.reload.not_detected?
+    assert XPost.find_by!(x_post_id: "old").pending?
+  end
+
   private
 
-  def create_pending_post!(x_post_id:, text:)
+  def create_pending_post!(x_post_id:, text:, posted_at: Time.current)
     XPost.create!(
       x_account: @account,
       x_post_id: x_post_id,
       text: text,
-      posted_at: Time.current,
+      posted_at: posted_at,
       event_detection_status: :pending
     )
   end
