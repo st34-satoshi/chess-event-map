@@ -1,6 +1,8 @@
 class XAccount < ApplicationRecord
   include PublicUid
 
+  has_many :x_posts, dependent: :destroy
+
   validates :at_name, presence: true, uniqueness: true
   validates :x_user_id, presence: true, uniqueness: true
   validates :profile_image_url,

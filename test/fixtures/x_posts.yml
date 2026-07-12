@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  x_account: one
+  x_post_id: "2000000001"
+  text: MyText1
+  posted_at: 2026-07-12 08:20:57
+  url: https://example.com/posts/one
+  public_uid: publicuid07
+
+two:
+  x_account: two
+  x_post_id: "2000000002"
+  text: MyText2
+  posted_at: 2026-07-12 08:20:57
+  url: https://example.com/posts/two
+  public_uid: publicuid08
