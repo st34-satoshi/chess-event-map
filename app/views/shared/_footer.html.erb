@@ -1,5 +1,5 @@
 <footer class="site-footer">
-  <div class="site-footer__inner">
+  <div class="site-footer__bar">
     <div class="site-footer__links">
       <%= link_to "https://twitter.com/stu345_self", class: "site-footer__link", target: "_blank", rel: "noopener noreferrer" do %>
         <svg class="site-footer__icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -17,7 +17,8 @@
     </div>
 
     <p class="site-footer__copyright">
-      &copy; 2021-<%= Time.current.year %> Satoshi Tanaka.
+      <% copyright_start_year = 2026 %>
+      &copy; <%= copyright_start_year == Time.current.year ? copyright_start_year : "#{copyright_start_year}-#{Time.current.year}" %> Satoshi Tanaka.
     </p>
   </div>
 </footer>
