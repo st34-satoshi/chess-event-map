@@ -1,5 +1,6 @@
 class Place < ApplicationRecord
   include PublicUid
+  include CreatedBySource
 
   JAPAN_LATITUDE_RANGE = 24.0..46.0
   JAPAN_LONGITUDE_RANGE = 122.0..154.0

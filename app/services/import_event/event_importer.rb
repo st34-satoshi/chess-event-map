@@ -49,7 +49,8 @@ module ImportEvent
         title: detail[:title],
         held_on: detail[:held_on],
         url: detail[:detail_url],
-        place: place
+        place: place,
+        created_by: :ai
       )
 
       Result.new(status: :created, event: event, place_created: place_created)
@@ -71,7 +72,7 @@ module ImportEvent
     end
 
     def find_or_create_place!(name:, address:)
-      place = Place.new(name: name, address: address)
+      place = Place.new(name: name, address: address, created_by: :ai)
       place.assign_coordinates_from_address
 
       existing = Place.find_by(latitude: place.latitude, longitude: place.longitude)

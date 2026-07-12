@@ -41,6 +41,8 @@ module ImportEvent
               assert_equal :created, result.status
               assert result.place_created
               assert_equal "サマーオープン2026", result.event.title
+              assert result.event.ai?
+              assert result.event.place.ai?
             end
           end
         end
@@ -91,6 +93,8 @@ module ImportEvent
             assert_equal :created, result.status
             refute result.place_created
             assert_equal place, result.event.place
+            assert result.event.ai?
+            assert result.event.place.human?
           end
         end
       end
