@@ -25,6 +25,27 @@
 <h1>チェスイベントマップ</h1>
 <p>大会・例会・交流会など、全国のチェスイベントを地図から探せるサイトです。</p>
 
+<%= form_with url: root_path, method: :get, class: "date-filter", local: true do %>
+  <p class="form__hint date-filter__hint">開催日で絞り込むと、その期間にイベントがある会場だけ地図に表示します。</p>
+  <div class="date-filter__row">
+    <%= label_tag :from, "から", class: "visually-hidden" %>
+    <%= date_field_tag :from, @from, class: "form__input date-filter__input" %>
+    <span class="date-filter__separator" aria-hidden="true">から</span>
+    <%= label_tag :to, "まで", class: "visually-hidden" %>
+    <%= date_field_tag :to, @to, class: "form__input date-filter__input" %>
+    <span class="date-filter__separator" aria-hidden="true">まで</span>
+  </div>
+  <div class="date-filter__actions">
+    <%= submit_tag "絞り込む", class: "form__submit" %>
+    <% if @from || @to %>
+      <%= link_to "クリア", root_path, class: "form__submit form__submit--secondary" %>
+    <% end %>
+  </div>
+  <% if @from || @to %>
+    <p class="date-filter__result"><%= @markers.size %>件の会場を表示中</p>
+  <% end %>
+<% end %>
+
 <%= tag.div "",
   class: "map map--sample",
   data: {

@@ -3,8 +3,14 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static values = {
     markers: Array,
-    center: { type: Array, default: [138.0, 36.0] },
-    zoom: { type: Number, default: 5 }
+    // Kyushu through Hokkaido so the initial view covers Japan as a whole
+    bounds: {
+      type: Array,
+      default: [
+        [128.5, 30.5],
+        [146.0, 45.7]
+      ]
+    }
   }
 
   async connect() {
@@ -13,16 +19,46 @@ export default class extends Controller {
     this.map = new this.maplibregl.Map({
       container: this.element,
       style: "https://tiles.openfreemap.org/styles/liberty",
-      center: this.centerValue,
-      zoom: this.zoomValue
+      bounds: this.boundsValue,
+      fitBoundsOptions: { padding: 24 }
     })
 
     this.map.addControl(new this.maplibregl.NavigationControl())
-    this.map.on("load", () => this.addClusterLayers())
+    this.map.on("load", () => {
+      this.preferJapaneseLabels()
+      this.addClusterLayers()
+    })
   }
 
   disconnect() {
     this.map?.remove()
+  }
+
+  // OpenFreeMap Liberty uses name:nonlatin for Hangul, which becomes "?" because
+  // the style fonts lack Korean glyphs. Prefer Japanese labels and fall back to
+  // Latin/English so Korean Hangul is not shown.
+  preferJapaneseLabels() {
+    const textField = [
+      "case",
+      ["has", "name:ja"],
+      [
+        "case",
+        ["has", "name:latin"],
+        ["concat", ["get", "name:latin"], "\n", ["get", "name:ja"]],
+        ["get", "name:ja"]
+      ],
+      ["coalesce", ["get", "name:latin"], ["get", "name_en"], ["get", "name"]]
+    ]
+
+    for (const layer of this.map.getStyle().layers) {
+      if (layer.type !== "symbol") continue
+      if (layer.layout?.["text-field"] == null) continue
+
+      const current = layer.layout["text-field"]
+      if (Array.isArray(current) && current[0] === "to-string") continue
+
+      this.map.setLayoutProperty(layer.id, "text-field", textField)
+    }
   }
 
   geojson() {

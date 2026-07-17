@@ -1,3 +1,52 @@
+.date-filter {
+  margin: 1.25rem 0 0;
+  padding: 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.date-filter__hint {
+  margin: 0 0 0.75rem;
+}
+
+.date-filter__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+}
+
+.form__input.date-filter__input {
+  flex: 0 0 auto;
+  width: 10.5rem;
+  max-width: 100%;
+}
+
+.date-filter__separator {
+  flex-shrink: 0;
+  font-size: 0.95rem;
+  color: #444;
+}
+
+.date-filter__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.75rem;
+}
+
+.date-filter__actions .form__submit {
+  margin-top: 0;
+}
+
+.date-filter__result {
+  margin: 0.75rem 0 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
 .form-page {
   max-width: 480px;
   margin: 0 auto;
