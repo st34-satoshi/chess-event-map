@@ -3,8 +3,14 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static values = {
     markers: Array,
-    center: { type: Array, default: [138.0, 36.0] },
-    zoom: { type: Number, default: 5 }
+    // Kyushu through Hokkaido so the initial view covers Japan as a whole
+    bounds: {
+      type: Array,
+      default: [
+        [128.5, 30.5],
+        [146.0, 45.7]
+      ]
+    }
   }
 
   async connect() {
@@ -13,8 +19,8 @@ export default class extends Controller {
     this.map = new this.maplibregl.Map({
       container: this.element,
       style: "https://tiles.openfreemap.org/styles/liberty",
-      center: this.centerValue,
-      zoom: this.zoomValue
+      bounds: this.boundsValue,
+      fitBoundsOptions: { padding: 24 }
     })
 
     this.map.addControl(new this.maplibregl.NavigationControl())
