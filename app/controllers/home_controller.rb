@@ -1,6 +1,15 @@
 class HomeController < ApplicationController
   def index
-    @markers = Place.all.map do |place|
+    @from = parse_date(params[:from])
+    @to = parse_date(params[:to])
+
+    places = if @from || @to
+      Place.with_events_held_between(@from, @to)
+    else
+      Place.all
+    end
+
+    @markers = places.map do |place|
       {
         name: place.name,
         address: place.address,
@@ -9,5 +18,15 @@ class HomeController < ApplicationController
         url: place_path(place)
       }
     end
+  end
+
+  private
+
+  def parse_date(value)
+    return if value.blank?
+
+    Date.iso8601(value)
+  rescue ArgumentError
+    nil
   end
 end

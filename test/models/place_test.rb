@@ -42,4 +42,14 @@ class PlaceTest < ActiveSupport::TestCase
 
     assert place.human?
   end
+
+  test "with_events_held_between filters by held_on range" do
+    places(:one).events.first.update!(held_on: Date.new(2026, 7, 20))
+    places(:two).events.first.update!(held_on: Date.new(2026, 8, 1))
+
+    results = Place.with_events_held_between(Date.new(2026, 7, 15), Date.new(2026, 7, 25))
+
+    assert_includes results, places(:one)
+    assert_not_includes results, places(:two)
+  end
 end

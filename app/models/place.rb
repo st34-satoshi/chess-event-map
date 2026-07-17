@@ -8,6 +8,13 @@ class Place < ApplicationRecord
   has_many :events, dependent: :restrict_with_error
   has_many :requests, as: :correctable, dependent: :destroy
 
+  scope :with_events_held_between, ->(from = nil, to = nil) {
+    relation = joins(:events).distinct
+    relation = relation.where(events: { held_on: from.. }) if from
+    relation = relation.where(events: { held_on: ..to }) if to
+    relation
+  }
+
   after_create_commit :notify_slack_of_creation
 
   validates :name, presence: true, uniqueness: { message: "はすでに登録されています" }
