@@ -16,7 +16,13 @@ class NotifySlackOfEventJob < ApplicationJob
       イベント名: #{event.title}
       開催日: #{event.held_on}
       会場: #{event.place.name}
-      #{app_base_url}/events/#{event.public_uid}
+      #{event_url_line(event)}#{app_base_url}/events/#{event.public_uid}
     TEXT
+  end
+
+  def event_url_line(event)
+    return "" if event.url.blank?
+
+    "URL: #{event.url}\n"
   end
 end
