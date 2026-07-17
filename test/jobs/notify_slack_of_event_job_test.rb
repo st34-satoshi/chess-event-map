@@ -13,7 +13,20 @@ class NotifySlackOfEventJobTest < ActiveJob::TestCase
     assert_includes message, event.title
     assert_includes message, event.held_on.to_s
     assert_includes message, place.name
+    assert_includes message, event.url
     assert_includes message, "https://chess-event-map.stu345.com/events/#{event.public_uid}"
+  end
+
+  test "omits the URL line when the event has no URL" do
+    place = Place.create!(name: "テスト会場", address: "テスト住所", latitude: 35.0, longitude: 135.0)
+    event = place.events.create!(title: "テスト大会", held_on: Date.new(2026, 7, 12))
+
+    message = nil
+    stub_class_method(SlackNotifier, :notify, ->(text) { message = text }) do
+      NotifySlackOfEventJob.perform_now(event.id)
+    end
+
+    assert_not_includes message, "URL: "
   end
 
   test "does nothing when the event no longer exists" do
