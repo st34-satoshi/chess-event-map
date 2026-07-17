@@ -1,5 +1,10 @@
 # CI runner for local development and Claude Code on GitHub Actions.
 # Usage: bin/ci-docker
+#
+# Separate project name so this stack does not replace the development `db`
+# container from docker-compose.yml.
+name: chess-event-map-ci
+
 services:
   db:
     image: mysql:8.3.0
