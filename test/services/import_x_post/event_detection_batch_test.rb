@@ -2,7 +2,7 @@ require "test_helper"
 
 class ImportXPost::EventDetectionBatchTest < ActiveSupport::TestCase
   setup do
-    XPost.pending.update_all(event_detection_status: XPost.event_detection_statuses[:not_detected])
+    XPost.pending.update_all(event_detection_status: XPost.event_detection_statuses[:no_event])
 
     @account = XAccount.create!(
       at_name: "batch_user",
@@ -20,7 +20,7 @@ class ImportXPost::EventDetectionBatchTest < ActiveSupport::TestCase
 
     stub_class_method(SlackNotifier, :notify, ->(text) { messages << text }) do
       stub_class_method(ImportXPost::EventDetector, :call, lambda { |x_post|
-        status = x_post.x_post_id == "p1" ? :detected : :not_detected
+        status = x_post.x_post_id == "p1" ? :detected : :no_event
         x_post.update!(event_detection_status: status)
         ImportXPost::EventDetector::Result.new(status: status, x_post: x_post)
       }) do
@@ -30,17 +30,17 @@ class ImportXPost::EventDetectionBatchTest < ActiveSupport::TestCase
 
         assert_equal 2, result.pending_count
         assert_equal 1, result.counts[:detected]
-        assert_equal 1, result.counts[:not_detected]
+        assert_equal 1, result.counts[:no_event]
       end
     end
 
-    assert_equal %i[detected not_detected], statuses
+    assert_equal %i[detected no_event], statuses
     assert_equal 2, messages.size
     assert_includes messages.first, "対象: 2件"
     assert_includes messages.first, "開始します"
     assert_includes messages.last, "完了しました"
     assert_includes messages.last, "detected: 1"
-    assert_includes messages.last, "not_detected: 1"
+    assert_includes messages.last, "no_event: 1"
     assert_includes messages.last, "already_exists: 0"
     assert_includes messages.last, "save_failed: 0"
     assert_equal "detected", pending_post.reload.event_detection_status
@@ -107,18 +107,18 @@ class ImportXPost::EventDetectionBatchTest < ActiveSupport::TestCase
     stub_class_method(SlackNotifier, :notify, ->(*) { }) do
       stub_class_method(ImportXPost::EventDetector, :call, lambda { |x_post|
         processed_ids << x_post.x_post_id
-        x_post.not_detected!
-        ImportXPost::EventDetector::Result.new(status: :not_detected, x_post: x_post)
+        x_post.no_event!
+        ImportXPost::EventDetector::Result.new(status: :no_event, x_post: x_post)
       }) do
         result = ImportXPost::EventDetectionBatch.call
 
         assert_equal 1, result.pending_count
-        assert_equal 1, result.counts[:not_detected]
+        assert_equal 1, result.counts[:no_event]
       end
     end
 
     assert_equal [ "recent" ], processed_ids
-    assert recent.reload.not_detected?
+    assert recent.reload.no_event?
     assert XPost.find_by!(x_post_id: "old").pending?
   end
 

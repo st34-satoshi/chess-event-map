@@ -34,4 +34,10 @@ namespace :import_x_post do
     count = ImportXPost::SaveFailedResetter.call
     puts "Done. reset=#{count}"
   end
+
+  desc "Migrate X posts with the deprecated not_detected status to no_event"
+  task migrate_not_detected_status: :environment do
+    count = ImportXPost::NotDetectedStatusMigrator.call
+    puts "Done. migrated=#{count}"
+  end
 end

@@ -42,7 +42,7 @@ module ImportXPost
     end
 
     def status_summary(counts)
-      statuses = %i[detected not_detected already_exists save_failed]
+      statuses = %i[detected no_event already_exists save_failed]
       lines = statuses.map { |status| "#{status}: #{counts[status]}" }
       lines.join("\n")
     end
