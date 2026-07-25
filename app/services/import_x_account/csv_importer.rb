@@ -22,24 +22,14 @@ module ImportXAccount
         at_name = normalize_at_name(row["at_name"])
         next if at_name.blank?
 
-        if XAccount.exists?(at_name: at_name)
-          skipped << at_name
-          next
+        result = AccountImporter.call(at_name: at_name)
+
+        case result.status
+        when :created
+          created << result.account
+        when :skipped
+          skipped << result.at_name
         end
-
-        profile = XApi::UserFetcher.get_by_username(at_name)
-
-        if XAccount.exists?(x_user_id: profile[:x_user_id]) || XAccount.exists?(at_name: profile[:at_name])
-          skipped << profile[:at_name]
-          next
-        end
-
-        created << XAccount.create!(
-          at_name: profile[:at_name],
-          x_user_id: profile[:x_user_id],
-          display_name: profile[:display_name],
-          profile_image_url: profile[:profile_image_url]
-        )
       end
 
       Result.new(created: created, skipped: skipped)
