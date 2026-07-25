@@ -9,6 +9,9 @@ ActiveAdmin.register XPost do
     column :x_account do |post|
       auto_link post.x_account, "@#{post.x_account.at_name}"
     end
+    column "Display name" do |post|
+      post.x_account.display_name
+    end
     column :text do |post|
       truncate(post.text, length: 80)
     end
@@ -27,6 +30,9 @@ ActiveAdmin.register XPost do
       row :public_uid
       row :x_account do |post|
         auto_link post.x_account, "@#{post.x_account.at_name}"
+      end
+      row "Display name" do |post|
+        post.x_account.display_name
       end
       row :x_post_id
       row :text do |post|
