@@ -1,5 +1,7 @@
 ActiveAdmin.register XPost do
-  actions :index, :show
+  actions :all, except: %i[new create destroy]
+
+  permit_params :event_detection_status, :text, :url, :posted_at
 
   includes :x_account
 
@@ -48,6 +50,24 @@ ActiveAdmin.register XPost do
       row :created_at
       row :updated_at
     end
+  end
+
+  form do |f|
+    f.inputs do
+      li do
+        label "X Account", class: "label"
+        div "@#{f.object.x_account.at_name} (#{f.object.x_account.display_name})"
+      end
+      li do
+        label "X Post ID", class: "label"
+        div f.object.x_post_id
+      end
+      f.input :event_detection_status, as: :select, collection: XPost.event_detection_statuses.keys
+      f.input :text, as: :text
+      f.input :url
+      f.input :posted_at, as: :datetime_select
+    end
+    f.actions
   end
 
   filter :x_account, collection: -> { XAccount.order(:at_name) }
