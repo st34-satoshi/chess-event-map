@@ -51,11 +51,12 @@ ActiveAdmin.register XAccount do
 
     def create
       result = ImportXAccount::AccountImporter.call(at_name: params[:x_account][:at_name])
+      namespace = ActiveAdmin.application.default_namespace
 
       if result.status == :created
-        redirect_to admin_x_account_path(result.account), notice: "@#{result.account.at_name} を追加しました"
+        redirect_to polymorphic_path([ namespace, result.account ]), notice: "@#{result.account.at_name} を追加しました"
       else
-        redirect_to admin_x_accounts_path, alert: "@#{result.at_name} は既に登録されています"
+        redirect_to polymorphic_path([ namespace, XAccount ]), alert: "@#{result.at_name} は既に登録されています"
       end
     rescue ArgumentError, XApi::Error, ActiveRecord::RecordInvalid => e
       flash.now[:error] = "追加に失敗しました: #{e.message}"
