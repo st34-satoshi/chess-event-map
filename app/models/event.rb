@@ -12,7 +12,7 @@ class Event < ApplicationRecord
     scope: :place_id,
     message: "と同じ会場のイベントはすでに登録されています"
   }
-  validates :url,
+  validates :url, :x_post_url,
     format: URI::DEFAULT_PARSER.make_regexp(%w[http https]),
     length: { maximum: 255 },
     allow_blank: true
