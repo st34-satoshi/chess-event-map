@@ -18,4 +18,19 @@ class EventTest < ActiveSupport::TestCase
     assert_not event.valid?
     assert_includes event.errors[:held_on], "と同じ会場のイベントはすでに登録されています"
   end
+
+  test "accepts a blank x_post_url" do
+    event = events(:one)
+    event.x_post_url = ""
+
+    assert event.valid?
+  end
+
+  test "rejects an invalid x_post_url" do
+    event = events(:one)
+    event.x_post_url = "not-a-url"
+
+    assert_not event.valid?
+    assert event.errors[:x_post_url].any?
+  end
 end
