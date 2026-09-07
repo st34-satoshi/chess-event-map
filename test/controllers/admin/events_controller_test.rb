@@ -11,7 +11,7 @@ class EventsAdminControllerTest < ActionDispatch::IntegrationTest
     event = events(:one)
     x_post_url = "https://x.com/example/status/123"
 
-    patch admin_event_path(event), params: {
+    patch event_resource_path(event), params: {
       event: {
         title: event.title,
         held_on: event.held_on,
@@ -21,17 +21,16 @@ class EventsAdminControllerTest < ActionDispatch::IntegrationTest
       }
     }
 
-    assert_redirected_to admin_event_path(event)
+    assert_redirected_to event_resource_path(event)
     assert_equal x_post_url, event.reload.x_post_url
   end
 
   private
 
-  def admin_event_path(event)
-    send(:"#{admin_namespace}_event_path", event)
-  end
-
-  def admin_namespace
-    ActiveAdmin.application.default_namespace
+  def event_resource_path(event)
+    Rails.application.routes.url_helpers.public_send(
+      :"#{ActiveAdmin.application.default_namespace}_event_path",
+      event
+    )
   end
 end
