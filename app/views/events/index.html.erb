@@ -62,7 +62,7 @@
               <%= link_to event.place.name, event.place, class: "form__link" %>
             </td>
             <td data-label="開催日" class="events-table__date">
-              <%= event.held_on.strftime("%Y年%m月%d日") %>
+              <%= event.held_on.strftime("%-m月%-d日") %>
             </td>
             <td data-label="URL" class="events-table__url">
               <% if event.url.present? %>

@@ -43,7 +43,7 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_includes response.body, events(:two).place.name
-    assert_includes response.body, "2026年09月08日"
+    assert_includes response.body, "9月8日"
   end
 
   test "index filters events by held_on range" do
