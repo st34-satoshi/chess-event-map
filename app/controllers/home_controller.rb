@@ -19,14 +19,4 @@ class HomeController < ApplicationController
       }
     end
   end
-
-  private
-
-  def parse_date(value)
-    return if value.blank?
-
-    Date.iso8601(value)
-  rescue ArgumentError
-    nil
-  end
 end

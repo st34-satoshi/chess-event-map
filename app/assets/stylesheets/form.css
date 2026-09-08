@@ -333,3 +333,130 @@ textarea.form__input {
   margin-top: 1rem;
   padding-top: 0.25rem;
 }
+
+.events-table-wrap {
+  margin-top: 1.25rem;
+}
+
+.events-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.events-table th,
+.events-table td {
+  padding: 0.75rem 0.85rem;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+  vertical-align: top;
+}
+
+.events-table th {
+  font-weight: 600;
+  color: #333;
+  background: #fafafa;
+  white-space: nowrap;
+}
+
+.events-table td {
+  color: #444;
+  overflow-wrap: break-word;
+}
+
+.events-table__title {
+  font-weight: 600;
+}
+
+.events-table__date {
+  white-space: nowrap;
+}
+
+.events-table__url-link {
+  display: inline-block;
+  max-width: 16rem;
+}
+
+.events-table__url-full {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-break: anywhere;
+}
+
+.events-table__url-short {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .date-filter__row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .form__input.date-filter__input {
+    width: 100%;
+  }
+
+  .events-table thead {
+    display: none;
+  }
+
+  .events-table,
+  .events-table tbody,
+  .events-table tr,
+  .events-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .events-table tr {
+    margin-bottom: 0.85rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: #fff;
+  }
+
+  .events-table td {
+    display: grid;
+    grid-template-columns: 5.5rem 1fr;
+    gap: 0.5rem;
+    padding: 0.4rem 0;
+    border-bottom: none;
+    overflow-wrap: break-word;
+    word-break: normal;
+  }
+
+  .events-table td:first-child {
+    padding-top: 0;
+  }
+
+  .events-table td:last-child {
+    padding-bottom: 0;
+  }
+
+  .events-table td::before {
+    content: attr(data-label);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #888;
+  }
+
+  .events-table__date {
+    white-space: normal;
+  }
+
+  .events-table__url-link {
+    max-width: none;
+  }
+
+  .events-table__url-full {
+    display: none;
+  }
+
+  .events-table__url-short {
+    display: inline;
+  }
+}
