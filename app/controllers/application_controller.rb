@@ -4,4 +4,14 @@ class ApplicationController < ActionController::Base
 
   # Changes to the importmap will invalidate the etag for HTML responses
   stale_when_importmap_changes
+
+  private
+
+  def parse_date(value)
+    return if value.blank?
+
+    Date.iso8601(value)
+  rescue ArgumentError
+    nil
+  end
 end

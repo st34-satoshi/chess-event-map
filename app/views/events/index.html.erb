@@ -1,0 +1,84 @@
+<% content_for :title do %>
+  <%= meta_title_tag("イベント一覧 | チェスイベントマップ") %>
+<% end %>
+
+<% content_for :description do %>
+  <%= meta_description_tag("全国のチェスイベントを開催日から探せます。") %>
+<% end %>
+
+<% content_for :ogp do %>
+  <%= meta_ogp_tags(
+    title: "イベント一覧 | チェスイベントマップ",
+    description: "全国のチェスイベントを開催日から探せます。",
+    url: events_url
+  ) %>
+<% end %>
+
+<% content_for :canonical do %>
+  <%= meta_canonical_tag(events_url) %>
+<% end %>
+
+<h1>イベント一覧</h1>
+
+<%= form_with url: events_path, method: :get, class: "date-filter", local: true do %>
+  <div class="date-filter__row">
+    <%= label_tag :from, "から", class: "visually-hidden" %>
+    <%= date_field_tag :from, @from, class: "form__input date-filter__input" %>
+    <span class="date-filter__separator" aria-hidden="true">から</span>
+    <%= label_tag :to, "まで", class: "visually-hidden" %>
+    <%= date_field_tag :to, @to, class: "form__input date-filter__input" %>
+    <span class="date-filter__separator" aria-hidden="true">まで</span>
+  </div>
+  <div class="date-filter__actions">
+    <%= submit_tag "絞り込む", class: "form__submit" %>
+    <% if params.key?(:from) || params.key?(:to) %>
+      <%= link_to "クリア", events_path, class: "form__submit form__submit--secondary" %>
+    <% end %>
+  </div>
+  <p class="date-filter__result"><%= @events.size %>件のイベントを表示中</p>
+  <% if @events_truncated %>
+    <p class="date-filter__result">該当が<%= EventsController::INDEX_LIMIT %>件を超えたため、開催日が早い順に<%= EventsController::INDEX_LIMIT %>件まで表示しています。期間を絞り込んでください。</p>
+  <% end %>
+<% end %>
+
+<% if @events.any? %>
+  <div class="events-table-wrap">
+    <table class="events-table">
+      <thead>
+        <tr>
+          <th>イベント名</th>
+          <th>場所</th>
+          <th>開催日</th>
+          <th>URL</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @events.each do |event| %>
+          <tr>
+            <td data-label="イベント名">
+              <%= link_to event.title, event, class: "form__link events-table__title" %>
+            </td>
+            <td data-label="場所">
+              <%= link_to event.place.name, event.place, class: "form__link" %>
+            </td>
+            <td data-label="開催日" class="events-table__date">
+              <%= event.held_on.strftime("%-m月%-d日") %>
+            </td>
+            <td data-label="URL" class="events-table__url">
+              <% if event.url.present? %>
+                <%= link_to event.url, class: "form__link events-table__url-link", target: "_blank", rel: "noopener noreferrer", title: event.url do %>
+                  <span class="events-table__url-full"><%= event.url %></span>
+                  <span class="events-table__url-short">サイトを開く</span>
+                <% end %>
+              <% else %>
+                -
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% else %>
+  <p class="form__hint">該当するイベントはありません。</p>
+<% end %>

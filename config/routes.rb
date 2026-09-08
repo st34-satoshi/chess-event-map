@@ -15,6 +15,6 @@ Rails.application.routes.draw do
   get "map", to: "maps#index", as: :map
 
   resources :places, only: %i[new create show], param: :public_uid
-  resources :events, only: %i[new create show], param: :public_uid
+  resources :events, only: %i[index new create show], param: :public_uid
   resources :requests, only: %i[new create]
 end

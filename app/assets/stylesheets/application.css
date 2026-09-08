@@ -2,6 +2,7 @@
  *= require header
  *= require footer
  *= require form
+ *= require event
  *= require map
  *= require_self
  */

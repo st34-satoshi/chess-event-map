@@ -264,34 +264,6 @@ textarea.form__input {
   color: #888;
 }
 
-.event-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.event-list__item {
-  padding: 0.75rem 0;
-  border-bottom: 1px solid #eee;
-}
-
-.event-list__item:first-child {
-  padding-top: 0;
-}
-
-.event-list__title {
-  display: block;
-  font-size: 1rem;
-  font-weight: 600;
-}
-
-.event-list__date {
-  display: block;
-  margin-top: 0.2rem;
-  font-size: 0.85rem;
-  color: #888;
-}
-
 .place-details {
   margin-bottom: 1.25rem;
 }
@@ -332,4 +304,15 @@ textarea.form__input {
 .place-details__content {
   margin-top: 1rem;
   padding-top: 0.25rem;
+}
+
+@media (max-width: 768px) {
+  .date-filter__row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .form__input.date-filter__input {
+    width: 100%;
+  }
 }
