@@ -19,7 +19,7 @@
 
 .form__input.date-filter__input {
   flex: 0 0 auto;
-  width: 10.5rem;
+  width: 12rem;
   max-width: 100%;
 }
 
@@ -309,10 +309,6 @@ textarea.form__input {
 @media (max-width: 768px) {
   .date-filter__row {
     flex-direction: column;
-    align-items: stretch;
-  }
-
-  .form__input.date-filter__input {
-    width: 100%;
+    align-items: flex-start;
   }
 }
