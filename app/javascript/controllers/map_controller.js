@@ -14,7 +14,8 @@ export default class extends Controller {
   }
 
   async connect() {
-    this.maplibregl = (await import("maplibre-gl")).default
+    this.maplibregl = await import("maplibre-gl")
+    this.maplibregl.setWorkerUrl("/maplibre-gl-worker.mjs")
 
     this.map = new this.maplibregl.Map({
       container: this.element,
