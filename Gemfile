@@ -51,6 +51,7 @@ gem "devise", "~> 5.0"
 
 gem "nokogiri"
 gem "anthropic"
+gem "mcp", "~> 1.6"
 
 
 group :development, :test do

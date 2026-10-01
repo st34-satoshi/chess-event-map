@@ -23,3 +23,8 @@ https://chess-event-map.stu345.com/
 ## Admin
 ### create user
 see seed.rb
+
+## Xへの投稿・MCP
+
+別のXアカウントをOAuth認証し、管理画面で選んだアカウントからAI経由でイベントを告知できます。
+設定・認証・Claude Code接続手順は [X投稿ガイド](docs/x-posting.md) を参照してください。
