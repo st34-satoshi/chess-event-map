@@ -1,0 +1,33 @@
+<p>Xで認証したアカウントから投稿先を1つ選択します。認証しただけでは投稿先は変更されません。</p>
+<p>現在の投稿先: <strong><%= setting.x_posting_account ? "@#{setting.x_posting_account.username}" : "未選択（投稿停止中）" %></strong></p>
+<%= button_to "Xアカウントを接続・再認証", { action: :connect }, method: :post %>
+<p>開発アカウントとは別のアカウントを使う場合は、Xの認証画面で目的のアカウントにログインしてください。</p>
+<%= form_with url: { action: :select_account }, method: :post, local: true do |form| %>
+  <%= form.label :account_id, "投稿に使用するXアカウント" %>
+  <%= form.select :account_id, accounts.map { |account| ["@#{account.username} / #{account.name} (X ID: #{account.x_user_id})", account.id] }, { include_blank: "未選択（投稿停止）", selected: setting.x_posting_account_id } %>
+  <%= form.submit "投稿先を保存" %>
+<% end %>
+<h2>認証済みアカウント</h2>
+<table>
+  <thead><tr><th>アカウント</th><th>X ID</th><th>アクセストークン有効期限（投稿時に自動更新）</th></tr></thead>
+  <tbody>
+    <% accounts.each do |account| %>
+      <tr><td>@<%= account.username %> / <%= account.name %></td><td><%= account.x_user_id %></td><td><%= account.expires_at %></td></tr>
+    <% end %>
+  </tbody>
+</table>
+<h2>投稿履歴（最新50件）</h2>
+<p>pending / failed の再送は自動で行いません。X上の投稿を確認してから新しいリクエストIDで指示してください。</p>
+<table>
+  <thead><tr><th>日時</th><th>リクエストID</th><th>イベント</th><th>投稿先</th><th>本文</th><th>状態</th><th>結果</th></tr></thead>
+  <tbody>
+    <% publications.each do |publication| %>
+      <tr>
+        <td><%= publication.created_at %></td><td><%= publication.request_id %></td><td><%= publication.event.title %></td>
+        <td><%= publication.x_posting_account && "@#{publication.x_posting_account.username}" %></td>
+        <td><%= publication.text %></td><td><%= publication.status %></td>
+        <td><% if publication.post_url %><%= link_to "Xで確認", publication.post_url, target: "_blank", rel: "noopener" %><% else %><%= publication.error_message %><% end %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

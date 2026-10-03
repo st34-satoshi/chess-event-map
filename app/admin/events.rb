@@ -2,6 +2,7 @@ ActiveAdmin.register Event do
   permit_params :title, :held_on, :url, :x_post_url, :place_id
 
   preserve_default_filters!
+  remove_filter :x_publications
   filter :x_post_url_present, as: :select, label: "X post url の有無",
     collection: [ [ "空でない", true ], [ "空", false ] ]
 

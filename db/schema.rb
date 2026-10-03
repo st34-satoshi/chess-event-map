@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_07_130900) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_02_000000) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "author_id"
     t.string "author_type"
@@ -228,6 +228,25 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_07_130900) do
     t.index ["x_user_id"], name: "index_x_accounts_on_x_user_id", unique: true
   end
 
+  create_table "x_posting_accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "x_user_id", null: false
+    t.string "username", null: false
+    t.string "name", null: false
+    t.text "access_token_ciphertext", null: false
+    t.text "refresh_token_ciphertext", null: false
+    t.datetime "expires_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["x_user_id"], name: "index_x_posting_accounts_on_x_user_id", unique: true
+  end
+
+  create_table "x_posting_settings", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "x_posting_account_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["x_posting_account_id"], name: "index_x_posting_settings_on_x_posting_account_id"
+  end
+
   create_table "x_posts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "event_detection_status", default: "pending", null: false
@@ -244,6 +263,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_07_130900) do
     t.index ["x_post_id"], name: "index_x_posts_on_x_post_id", unique: true
   end
 
+  create_table "x_publications", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "event_id", null: false
+    t.bigint "x_posting_account_id"
+    t.string "request_id", limit: 100, null: false
+    t.text "text", null: false
+    t.string "status", default: "pending", null: false
+    t.string "x_post_id"
+    t.string "error_message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id"], name: "index_x_publications_on_event_id"
+    t.index ["request_id"], name: "index_x_publications_on_request_id", unique: true
+    t.index ["x_posting_account_id"], name: "index_x_publications_on_x_posting_account_id"
+  end
+
   add_foreign_key "events", "places"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
@@ -251,5 +285,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_07_130900) do
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "x_posting_settings", "x_posting_accounts"
   add_foreign_key "x_posts", "x_accounts"
+  add_foreign_key "x_publications", "events"
+  add_foreign_key "x_publications", "x_posting_accounts"
 end
