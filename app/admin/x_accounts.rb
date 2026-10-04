@@ -46,9 +46,6 @@ ActiveAdmin.register XAccount do
           column :url do |website|
             link_to website.url, website.url, target: "_blank", rel: "noopener"
           end
-          column :active
-          column :last_crawl_status
-          column :last_crawled_at
         end
       else
         para "紐付いているWebサイトはありません。"

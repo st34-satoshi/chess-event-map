@@ -32,9 +32,4 @@ class WebsiteTest < ActiveSupport::TestCase
 
     assert_nil website.reload.x_account_id
   end
-
-  test "active scope excludes inactive websites" do
-    assert_includes Website.active, websites(:one)
-    assert_not_includes Website.active, websites(:two)
-  end
 end

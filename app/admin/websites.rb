@@ -1,7 +1,7 @@
 ActiveAdmin.register Website do
   menu label: "Webサイト"
 
-  permit_params :name, :url, :x_account_id, :active
+  permit_params :name, :url, :x_account_id
 
   includes :x_account
 
@@ -17,9 +17,7 @@ ActiveAdmin.register Website do
         auto_link website.x_account, "@#{website.x_account.at_name}"
       end
     end
-    column :active
-    column :last_crawl_status
-    column :last_crawled_at
+    column :created_at
     actions
   end
 
@@ -35,12 +33,6 @@ ActiveAdmin.register Website do
           auto_link website.x_account, "@#{website.x_account.at_name} (#{website.x_account.display_name})"
         end
       end
-      row :active
-      row :last_crawl_status
-      row :last_crawled_at
-      row :last_crawl_message do |website|
-        simple_format website.last_crawl_message if website.last_crawl_message.present?
-      end
       row :created_at
       row :updated_at
     end
@@ -54,7 +46,6 @@ ActiveAdmin.register Website do
         input_html: { placeholder: "https://example.com/events" }
       f.input :x_account, label: "同じクラブのXアカウント", include_blank: "なし",
         collection: XAccount.order(:at_name).map { |account| [ "@#{account.at_name} (#{account.display_name})", account.id ] }
-      f.input :active, label: "巡回する"
     end
     f.actions
   end
@@ -62,9 +53,7 @@ ActiveAdmin.register Website do
   filter :name
   filter :url
   filter :x_account, collection: -> { XAccount.order(:at_name).map { |account| [ "@#{account.at_name}", account.id ] } }
-  filter :active
-  filter :last_crawl_status, as: :select, collection: -> { Website.last_crawl_statuses.keys }
-  filter :last_crawled_at
+  filter :created_at
 
   controller do
     def find_resource

@@ -219,12 +219,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_04_000000) do
     t.string "name", null: false
     t.string "url", null: false
     t.bigint "x_account_id"
-    t.boolean "active", default: true, null: false
     t.string "public_uid", null: false
-    t.string "content_digest"
-    t.datetime "last_crawled_at"
-    t.string "last_crawl_status"
-    t.text "last_crawl_message"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["public_uid"], name: "index_websites_on_public_uid", unique: true

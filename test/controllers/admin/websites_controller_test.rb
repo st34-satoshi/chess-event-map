@@ -10,7 +10,7 @@ class WebsitesAdminControllerTest < ActionDispatch::IntegrationTest
   test "registers a website linked to an x account" do
     assert_difference "Website.count", 1 do
       post websites_resource_path, params: {
-        website: { name: "新しいクラブ", url: "https://new-club.example.com/", x_account_id: x_accounts(:two).id, active: "1" }
+        website: { name: "新しいクラブ", url: "https://new-club.example.com/", x_account_id: x_accounts(:two).id }
       }
     end
 

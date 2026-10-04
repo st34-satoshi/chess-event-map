@@ -2,11 +2,9 @@ one:
   name: Chess Tokyo
   url: https://chess-tokyo.example.com/events
   x_account: one
-  active: true
   public_uid: publicuid21
 
 two:
   name: Chess Osaka
   url: https://chess-osaka.example.com/
-  active: false
   public_uid: publicuid22
