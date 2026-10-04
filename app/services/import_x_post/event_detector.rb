@@ -54,7 +54,7 @@ module ImportXPost
         raise ArgumentError, "event fields are incomplete: title=#{analysis[:title].inspect} held_on=#{analysis[:held_on].inspect} place_name=#{analysis[:place_name].inspect}"
       end
 
-      place, place_created = find_or_create_place!(
+      place, place_created = ImportEvent::PlaceResolver.find_or_create!(
         name: analysis[:place_name],
         address: analysis[:place_address]
       )
@@ -75,23 +75,6 @@ module ImportXPost
 
       @x_post.detected!
       Result.new(status: :detected, x_post: @x_post, event: event, place_created: place_created)
-    end
-
-    def find_or_create_place!(name:, address:)
-      existing_place = Place.find_by(name: name)
-      return [ existing_place, false ] if existing_place
-
-      resolved_address = address.presence || Claude::AddressInferrer.infer(place_name: name)
-      raise ArgumentError, "geocodable address could not be determined for #{name}" if resolved_address.blank?
-
-      place = Place.new(name: name, address: resolved_address, created_by: :ai)
-      place.assign_coordinates_from_address
-
-      existing = Place.find_by(latitude: place.latitude, longitude: place.longitude)
-      return [ existing, false ] if existing
-
-      place.save!
-      [ place, true ]
     end
 
     def fail_save!(message)

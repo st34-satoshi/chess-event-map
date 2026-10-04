@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_02_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_04_000000) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body"
@@ -215,6 +215,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_000000) do
     t.index ["key"], name: "index_solid_queue_semaphores_on_key", unique: true
   end
 
+  create_table "websites", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "url", null: false
+    t.bigint "x_account_id"
+    t.boolean "active", default: true, null: false
+    t.string "public_uid", null: false
+    t.string "content_digest"
+    t.datetime "last_crawled_at"
+    t.string "last_crawl_status"
+    t.text "last_crawl_message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["public_uid"], name: "index_websites_on_public_uid", unique: true
+    t.index ["url"], name: "index_websites_on_url", unique: true
+    t.index ["x_account_id"], name: "index_websites_on_x_account_id"
+  end
+
   create_table "x_accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "at_name"
     t.string "x_user_id"
@@ -285,6 +302,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_000000) do
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "websites", "x_accounts", on_delete: :nullify
   add_foreign_key "x_posting_settings", "x_posting_accounts"
   add_foreign_key "x_posts", "x_accounts"
   add_foreign_key "x_publications", "events"
