@@ -3,6 +3,8 @@ ActiveAdmin.register XAccount do
 
   permit_params :at_name
 
+  includes :websites
+
   index do
     selectable_column
     id_column
@@ -11,6 +13,9 @@ ActiveAdmin.register XAccount do
     end
     column :display_name
     column :x_user_id
+    column "Webサイト" do |account|
+      safe_join(account.websites.map { |website| auto_link website, website.name }, ", ")
+    end
     column :created_at
     actions
   end
@@ -30,6 +35,23 @@ ActiveAdmin.register XAccount do
       end
       row :created_at
       row :updated_at
+    end
+
+    panel "同じクラブのWebサイト" do
+      if resource.websites.any?
+        table_for resource.websites.order(:name) do
+          column :name do |website|
+            auto_link website, website.name
+          end
+          column :url do |website|
+            link_to website.url, website.url, target: "_blank", rel: "noopener"
+          end
+        end
+      else
+        para "紐付いているWebサイトはありません。"
+      end
+      para link_to("このアカウントに紐付けてWebサイトを追加",
+        new_polymorphic_path([ ActiveAdmin.application.default_namespace, Website ], website: { x_account_id: resource.id }))
     end
   end
 

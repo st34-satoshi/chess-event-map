@@ -2,6 +2,7 @@ class XAccount < ApplicationRecord
   include PublicUid
 
   has_many :x_posts, dependent: :destroy
+  has_many :websites, dependent: :nullify
 
   validates :at_name, presence: true, uniqueness: true
   validates :x_user_id, presence: true, uniqueness: true

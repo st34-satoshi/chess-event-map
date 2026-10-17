@@ -1,0 +1,10 @@
+one:
+  name: Chess Tokyo
+  url: https://chess-tokyo.example.com/events
+  x_account: one
+  public_uid: publicuid21
+
+two:
+  name: Chess Osaka
+  url: https://chess-osaka.example.com/
+  public_uid: publicuid22
