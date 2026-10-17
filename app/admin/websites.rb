@@ -44,6 +44,11 @@ ActiveAdmin.register Website do
       f.input :name, label: "名前", hint: "例: 東京チェスクラブ"
       f.input :url, label: "URL", hint: "イベント情報が載っているページのURL（トップページ、または大会・例会一覧ページ）",
         input_html: { placeholder: "https://example.com/events" }
+      li do
+        label "Xアカウントを検索", for: "website_x_account_search"
+        text_node f.template.search_field_tag(nil, nil, id: "website_x_account_search",
+          placeholder: "アカウント名・表示名で検索", "aria-controls": "website_x_account_id")
+      end
       f.input :x_account, label: "同じクラブのXアカウント", include_blank: "なし",
         collection: XAccount.order(:at_name).map { |account| [ "@#{account.at_name} (#{account.display_name})", account.id ] }
     end
