@@ -5,7 +5,7 @@ class EventsController < ApplicationController
     @from = params.key?(:from) ? parse_date(params[:from]) : Date.current
     @to = parse_date(params[:to])
 
-    events = Event.includes(:place).order(:held_on, :title)
+    events = Event.not_cancelled.includes(:place).order(:held_on, :title)
     events = events.where(held_on: @from..) if @from
     events = events.where(held_on: ..@to) if @to
 
@@ -31,7 +31,7 @@ class EventsController < ApplicationController
   end
 
   def show
-    @event = Event.find_by!(public_uid: params[:public_uid])
+    @event = Event.not_cancelled.find_by!(public_uid: params[:public_uid])
   end
 
   private

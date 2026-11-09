@@ -56,6 +56,24 @@ class EventsAdminControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "admin can cancel and restore an event" do
+    event = events(:one)
+
+    [ "1", "0" ].each do |cancelled|
+      patch event_resource_path(event), params: { event: { cancelled: cancelled } }
+
+      assert_redirected_to event_resource_path(event)
+      assert_equal cancelled == "1", event.reload.cancelled?
+
+      get event_resource_path(event)
+      assert_response :success
+
+      get events_resource_path
+      assert_response :success
+      assert_select "#index_table_events td.col-title", text: event.title
+    end
+  end
+
   private
 
   def events_resource_path

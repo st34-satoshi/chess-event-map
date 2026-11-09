@@ -1,6 +1,17 @@
 require "test_helper"
 
 class HomeControllerTest < ActionDispatch::IntegrationTest
+  test "date filter excludes places whose matching events are cancelled" do
+    events(:one).update!(held_on: Date.new(2026, 7, 20), cancelled: true)
+    events(:two).update!(held_on: Date.new(2026, 7, 20))
+
+    get root_path, params: { from: "2026-07-20", to: "2026-07-20" }
+
+    assert_response :success
+    assert_not_includes response.body, places(:one).name
+    assert_includes response.body, places(:two).name
+  end
+
   test "index shows all places without date filter" do
     get root_path
 
