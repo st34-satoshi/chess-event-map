@@ -23,7 +23,7 @@ class PlacesController < ApplicationController
 
   def show
     @place = Place.find_by!(public_uid: params[:public_uid])
-    @events = @place.events.order(held_on: :desc)
+    @events = @place.events.not_cancelled.order(held_on: :desc)
   end
 
   private

@@ -1,5 +1,5 @@
 ActiveAdmin.register Event do
-  permit_params :title, :held_on, :url, :x_post_url, :place_id
+  permit_params :title, :held_on, :url, :x_post_url, :place_id, :cancelled
 
   preserve_default_filters!
   remove_filter :x_publications
@@ -14,6 +14,7 @@ ActiveAdmin.register Event do
       f.input :place
       f.input :url
       f.input :x_post_url
+      f.input :cancelled, label: "キャンセル済み"
     end
     f.actions
   end

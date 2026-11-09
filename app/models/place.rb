@@ -9,7 +9,7 @@ class Place < ApplicationRecord
   has_many :requests, as: :correctable, dependent: :destroy
 
   scope :with_events_held_between, ->(from = nil, to = nil) {
-    relation = joins(:events).distinct
+    relation = joins(:events).merge(Event.not_cancelled).distinct
     relation = relation.where(events: { held_on: from.. }) if from
     relation = relation.where(events: { held_on: ..to }) if to
     relation

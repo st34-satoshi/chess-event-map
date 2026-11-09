@@ -13,6 +13,24 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     )
   end
 
+  test "cancelled events are hidden from the index and detail page" do
+    @tomorrow.update!(cancelled: true)
+
+    get events_path, params: { from: "", to: "" }
+
+    assert_response :success
+    assert_not_includes response.body, @tomorrow.title
+    assert_includes response.body, events(:two).title
+    assert_includes response.body, "2件のイベントを表示中"
+
+    get event_path(@tomorrow)
+    assert_response :not_found
+
+    @tomorrow.update!(cancelled: false)
+    get event_path(@tomorrow)
+    assert_response :success
+  end
+
   test "index shows header link to events" do
     travel_to @today do
       get events_path

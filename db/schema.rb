@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_04_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_09_000000) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body"
@@ -47,6 +47,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_04_000000) do
     t.bigint "place_id", null: false
     t.string "created_by", default: "human", null: false
     t.string "x_post_url"
+    t.boolean "cancelled", default: false, null: false
     t.index ["held_on", "place_id"], name: "index_events_on_held_on_and_place_id", unique: true
     t.index ["place_id"], name: "index_events_on_place_id"
     t.index ["public_uid"], name: "index_events_on_public_uid", unique: true

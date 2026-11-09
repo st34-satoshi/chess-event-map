@@ -6,6 +6,8 @@ class Event < ApplicationRecord
   has_many :x_publications, dependent: :restrict_with_error
   has_many :requests, as: :correctable, dependent: :destroy
 
+  scope :not_cancelled, -> { where(cancelled: false) }
+
   after_create_commit :notify_slack_of_creation
 
   validates :title, presence: true
